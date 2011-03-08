@@ -33,4 +33,10 @@ struct VirtIOSCSIConf {
     DEFINE_PROP_UINT32("max_sectors", _state, _conf_field.max_sectors, 0xFFFF), \
     DEFINE_PROP_UINT32("cmd_per_lun", _state, _conf_field.cmd_per_lun, 128)
 
+typedef struct {
+    /* The tcm_vhost wwpn and tpgt */
+    char *wwpn;
+    uint16_t tpgt;
+} VirtIOSCSIConf;
+
 #endif /* _QEMU_VIRTIO_SCSI_H */

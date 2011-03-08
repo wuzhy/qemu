@@ -13,6 +13,8 @@
  *
  */
 
+#include "qemu-common.h"
+#include "qemu-error.h"
 #include "virtio-scsi.h"
 #include <hw/scsi.h>
 #include <hw/scsi-defs.h>
