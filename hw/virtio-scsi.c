@@ -18,6 +18,7 @@
 #include "virtio-scsi.h"
 #include <hw/scsi.h>
 #include <hw/scsi-defs.h>
+#include "vhost.h"
 
 #define VIRTIO_SCSI_VQ_SIZE     128
 #define VIRTIO_SCSI_CDB_SIZE    32
@@ -137,6 +138,9 @@ typedef struct {
     VirtQueue *ctrl_vq;
     VirtQueue *event_vq;
     VirtQueue *cmd_vqs[0];
+    struct vhost_virtqueue vhost_vqs[1];
+    bool vhost_started;
+    VHostSCSI *vhost_scsi;
 } VirtIOSCSI;
 
 typedef struct VirtIOSCSIReq {
@@ -456,6 +460,11 @@ static void virtio_scsi_fail_cmd_req(VirtIOSCSIReq *req)
     virtio_scsi_complete_req(req);
 }
 
+static VirtIOSCSI *to_virtio_scsi(VirtIODevice *vdev)
+{
+    return (VirtIOSCSI *)vdev;
+}
+
 static void virtio_scsi_handle_cmd(VirtIODevice *vdev, VirtQueue *vq)
 {
     VirtIOSCSI *s = (VirtIOSCSI *)vdev;
@@ -605,6 +614,8 @@ VirtIODevice *virtio_scsi_init(DeviceState *dev, VirtIOSCSIConf *proxyconf)
 
     s->qdev = dev;
     s->conf = proxyconf;
+    s->vhost_started = false;
+    s->vhost_scsi = proxyconf->vhost_scsi;
 
     /* TODO set up vdev function pointers */
     s->vdev.get_config = virtio_scsi_get_config;
@@ -636,5 +647,6 @@ void virtio_scsi_exit(VirtIODevice *vdev)
 {
     VirtIOSCSI *s = (VirtIOSCSI *)vdev;
     unregister_savevm(s->qdev, "virtio-scsi", s);
+    vhost_dev_cleanup(&s->vhost_scsi);
     virtio_cleanup(vdev);
 }
