@@ -138,7 +138,6 @@ typedef struct {
     VirtQueue *ctrl_vq;
     VirtQueue *event_vq;
     VirtQueue *cmd_vqs[0];
-    struct vhost_virtqueue vhost_vqs[1];
     bool vhost_started;
     VHostSCSI *vhost_scsi;
 } VirtIOSCSI;
@@ -601,6 +600,42 @@ static struct SCSIBusInfo virtio_scsi_scsi_info = {
     .load_request = virtio_scsi_load_request,
 };
 
+static bool virtio_scsi_started(VirtIOSCSI *s, uint8_t val)
+{
+    return (val & VIRTIO_CONFIG_S_DRIVER_OK) && s->vdev.vm_running;
+}
+
+static void virtio_scsi_set_status(VirtIODevice *vdev, uint8_t val)
+{
+    VirtIOSCSI *s = to_virtio_scsi(vdev);
+    bool start = virtio_scsi_started(s, val);
+
+    if (s->vhost_started == start) {
+        return;
+    }
+
+    if (start) {
+        int ret;
+
+        if (!vhost_dev_query(&s->vhost_scsi, vdev)) {
+            return;
+        }
+
+        ret = virtio_scsi_vhost_start(s);
+        if (ret < 0) {
+            error_report("virtio-scsi: unable to start vhost: %s\n",
+                         strerror(-ret));
+
+            /* There is no userspace virtio-scsi fallback so exit */
+            exit(1);
+        }
+    } else {
+        virtio_scsi_vhost_stop(s);
+    }
+
+    s->vhost_started = start;
+}
+
 VirtIODevice *virtio_scsi_init(DeviceState *dev, VirtIOSCSIConf *proxyconf)
 {
     VirtIOSCSI *s;
@@ -622,6 +657,9 @@ VirtIODevice *virtio_scsi_init(DeviceState *dev, VirtIOSCSIConf *proxyconf)
     s->vdev.set_config = virtio_scsi_set_config;
     s->vdev.get_features = virtio_scsi_get_features;
     s->vdev.reset = virtio_scsi_reset;
+    if (s->vhost_scsi) {
+        s->vdev.set_status = virtio_scsi_set_status;
+    }
 
     s->ctrl_vq = virtio_add_queue(&s->vdev, VIRTIO_SCSI_VQ_SIZE,
                                    virtio_scsi_handle_ctrl);
@@ -647,6 +685,10 @@ void virtio_scsi_exit(VirtIODevice *vdev)
 {
     VirtIOSCSI *s = (VirtIOSCSI *)vdev;
     unregister_savevm(s->qdev, "virtio-scsi", s);
+
+    /* This will stop vhost backend if appropriate. */
+    virtio_scsi_set_status(vdev, 0);
+
     vhost_dev_cleanup(&s->vhost_scsi);
     virtio_cleanup(vdev);
 }
