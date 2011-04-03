@@ -63,7 +63,7 @@ block-nested-$(CONFIG_RBD) += rbd.o
 block-obj-y +=  $(addprefix block/, $(block-nested-y))
 
 net-obj-y = net.o
-net-nested-y = queue.o checksum.o util.o
+net-nested-y = queue.o checksum.o util.o hub.o
 net-nested-y += socket.o
 net-nested-y += dump.o
 net-nested-$(CONFIG_POSIX) += tap.o

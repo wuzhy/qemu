@@ -38,6 +38,7 @@ typedef enum {
     NET_CLIENT_TYPE_VDE,
     NET_CLIENT_TYPE_DUMP,
     NET_CLIENT_TYPE_BRIDGE,
+    NET_CLIENT_TYPE_HUB,
 
     NET_CLIENT_TYPE_MAX
 } net_client_type;
