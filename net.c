@@ -25,6 +25,7 @@
 
 #include "config-host.h"
 
+#include "net/hub.h"
 #include "net/tap.h"
 #include "net/socket.h"
 #include "net/dump.h"
@@ -153,23 +154,25 @@ void qemu_macaddr_default_if_unset(MACAddr *macaddr)
     macaddr->a[5] = 0x56 + index++;
 }
 
+/**
+ * Generate a name for net client
+ *
+ * Only net clients created with the legacy -net option need this.  Naming is
+ * mandatory for net clients created with -netdev.
+ */
 static char *assign_name(VLANClientState *vc1, const char *model)
 {
-    VLANState *vlan;
     VLANClientState *vc;
     char buf[256];
     int id = 0;
 
-    QTAILQ_FOREACH(vlan, &vlans, next) {
-        QTAILQ_FOREACH(vc, &vlan->clients, next) {
-            if (vc != vc1 && strcmp(vc->model, model) == 0) {
-                id++;
-            }
-        }
-    }
-
     QTAILQ_FOREACH(vc, &non_vlan_clients, next) {
-        if (vc != vc1 && strcmp(vc->model, model) == 0) {
+        if (vc == vc1) {
+            continue;
+        }
+        /* For compatibility only bump id for net clients on a vlan */
+        if (strcmp(vc->model, model) == 0 &&
+            net_hub_id_for_client(vc, NULL) == 0) {
             id++;
         }
     }
@@ -745,7 +748,7 @@ int net_handle_fd_param(Monitor *mon, const char *param)
     return fd;
 }
 
-static int net_init_nic(QemuOpts *opts, const char *name, VLANState *vlan)
+static int net_init_nic(QemuOpts *opts, const char *name, VLANClientState *peer)
 {
     int idx;
     NICInfo *nd;
@@ -768,8 +771,8 @@ static int net_init_nic(QemuOpts *opts, const char *name, VLANState *vlan)
             return -1;
         }
     } else {
-        assert(vlan);
-        nd->vlan = vlan;
+        assert(peer);
+        nd->netdev = peer;
     }
     if (name) {
         nd->name = g_strdup(name);
@@ -819,7 +822,7 @@ static int net_init_nic(QemuOpts *opts, const char *name, VLANState *vlan)
 
 typedef int (*net_client_init_func)(QemuOpts *opts,
                                     const char *name,
-                                    VLANState *vlan);
+                                    VLANClientState *peer);
 
 /* magic number, but compiler will warn if too small */
 #define NET_MAX_DESC 20
@@ -1133,7 +1136,7 @@ int net_client_init(QemuOpts *opts, int is_netdev, Error **errp)
         if (net_client_types[i].type != NULL &&
             !strcmp(net_client_types[i].type, type)) {
             Error *local_err = NULL;
-            VLANState *vlan = NULL;
+            VLANClientState *peer = NULL;
             int ret;
 
             qemu_opts_validate(opts, &net_client_types[i].desc[0], &local_err);
@@ -1146,12 +1149,12 @@ int net_client_init(QemuOpts *opts, int is_netdev, Error **errp)
              * netdev= parameter. */
             if (!(is_netdev ||
                   (strcmp(type, "nic") == 0 && qemu_opt_get(opts, "netdev")))) {
-                vlan = qemu_find_vlan(qemu_opt_get_number(opts, "vlan", 0), 1);
+                peer = net_hub_add_port(qemu_opt_get_number(opts, "vlan", 0));
             }
 
             ret = 0;
             if (net_client_types[i].init) {
-                ret = net_client_types[i].init(opts, name, vlan);
+                ret = net_client_types[i].init(opts, name, peer);
                 if (ret < 0) {
                     /* TODO push error reporting into init() methods */
                     error_set(errp, QERR_DEVICE_INIT_FAILED, type);
@@ -1316,6 +1319,7 @@ void do_info_network(Monitor *mon)
             print_net_client(mon, peer);
         }
     }
+    net_hub_info(mon);
 }
 
 void qmp_set_link(const char *name, bool up, Error **errp)

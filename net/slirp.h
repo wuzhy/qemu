@@ -30,7 +30,7 @@
 
 #ifdef CONFIG_SLIRP
 
-int net_init_slirp(QemuOpts *opts, const char *name, VLANState *vlan);
+int net_init_slirp(QemuOpts *opts, const char *name, VLANClientState *peer);
 
 void net_slirp_hostfwd_add(Monitor *mon, const QDict *qdict);
 void net_slirp_hostfwd_remove(Monitor *mon, const QDict *qdict);

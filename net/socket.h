@@ -27,6 +27,6 @@
 #include "net.h"
 #include "qemu-common.h"
 
-int net_init_socket(QemuOpts *opts, const char *name, VLANState *vlan);
+int net_init_socket(QemuOpts *opts, const char *name, VLANClientState *vlan);
 
 #endif /* QEMU_NET_SOCKET_H */

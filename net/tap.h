@@ -32,7 +32,7 @@
 #define DEFAULT_NETWORK_SCRIPT "/etc/qemu-ifup"
 #define DEFAULT_NETWORK_DOWN_SCRIPT "/etc/qemu-ifdown"
 
-int net_init_tap(QemuOpts *opts, const char *name, VLANState *vlan);
+int net_init_tap(QemuOpts *opts, const char *name, VLANClientState *peer);
 
 int tap_open(char *ifname, int ifname_size, int *vnet_hdr, int vnet_hdr_required);
 
