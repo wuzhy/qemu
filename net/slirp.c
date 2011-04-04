@@ -134,7 +134,7 @@ static NetClientInfo net_slirp_info = {
     .cleanup = net_slirp_cleanup,
 };
 
-static int net_slirp_init(VLANState *vlan, const char *model,
+static int net_slirp_init(VLANClientState *peer, const char *model,
                           const char *name, int restricted,
                           const char *vnetwork, const char *vhost,
                           const char *vhostname, const char *tftp_export,
@@ -237,7 +237,7 @@ static int net_slirp_init(VLANState *vlan, const char *model,
     }
 #endif
 
-    nc = qemu_new_net_client(&net_slirp_info, vlan, NULL, model, name);
+    nc = qemu_new_net_client(&net_slirp_info, NULL, peer, model, name);
 
     snprintf(nc->info_str, sizeof(nc->info_str),
              "net=%s,restrict=%s", inet_ntoa(net),
@@ -678,7 +678,7 @@ static int net_init_slirp_configs(const char *name, const char *value, void *opa
 int net_init_slirp(QemuOpts *opts,
                    Monitor *mon,
                    const char *name,
-                   VLANState *vlan)
+                   VLANClientState *peer)
 {
     struct slirp_config_str *config;
     const char *vhost;
@@ -735,7 +735,7 @@ int net_init_slirp(QemuOpts *opts,
 
     qemu_opt_foreach(opts, net_init_slirp_configs, NULL, 0);
 
-    ret = net_slirp_init(vlan, "user", name, restricted, vnet, vhost,
+    ret = net_slirp_init(peer, "user", name, restricted, vnet, vhost,
                          vhostname, tftp_export, bootfile, vdhcp_start,
                          vnamesrv, smb_export, vsmbsrv);
 

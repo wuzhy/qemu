@@ -321,7 +321,7 @@ static NetClientInfo net_tap_info = {
     .cleanup = tap_cleanup,
 };
 
-static TAPState *net_tap_fd_init(VLANState *vlan,
+static TAPState *net_tap_fd_init(VLANClientState *peer,
                                  const char *model,
                                  const char *name,
                                  int fd,
@@ -330,7 +330,7 @@ static TAPState *net_tap_fd_init(VLANState *vlan,
     VLANClientState *nc;
     TAPState *s;
 
-    nc = qemu_new_net_client(&net_tap_info, vlan, NULL, model, name);
+    nc = qemu_new_net_client(&net_tap_info, NULL, peer, model, name);
 
     s = DO_UPCAST(TAPState, nc, nc);
 
@@ -583,7 +583,8 @@ static int net_tap_init(QemuOpts *opts, int *vnet_hdr)
     return fd;
 }
 
-int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name, VLANState *vlan)
+int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name,
+                 VLANClientState *peer)
 {
     TAPState *s;
     int fd, vnet_hdr = 0;

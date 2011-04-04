@@ -33,7 +33,7 @@
 int net_init_slirp(QemuOpts *opts,
                    Monitor *mon,
                    const char *name,
-                   VLANState *vlan);
+                   VLANClientState *peer);
 
 void net_slirp_hostfwd_add(Monitor *mon, const QDict *qdict);
 void net_slirp_hostfwd_remove(Monitor *mon, const QDict *qdict);

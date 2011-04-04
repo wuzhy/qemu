@@ -673,7 +673,7 @@ static NetClientInfo net_tap_win32_info = {
     .cleanup = tap_cleanup,
 };
 
-static int tap_win32_init(VLANState *vlan, const char *model,
+static int tap_win32_init(VLANClientState *peer, const char *model,
                           const char *name, const char *ifname)
 {
     VLANClientState *nc;
@@ -685,7 +685,7 @@ static int tap_win32_init(VLANState *vlan, const char *model,
         return -1;
     }
 
-    nc = qemu_new_net_client(&net_tap_win32_info, vlan, NULL, model, name);
+    nc = qemu_new_net_client(&net_tap_win32_info, NULL, peer, model, name);
 
     s = DO_UPCAST(TAPState, nc, nc);
 
@@ -699,7 +699,8 @@ static int tap_win32_init(VLANState *vlan, const char *model,
     return 0;
 }
 
-int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name, VLANState *vlan)
+int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name,
+                 VLANClientState *peer)
 {
     const char *ifname;
 
@@ -710,7 +711,7 @@ int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name, VLANState *vlan
         return -1;
     }
 
-    if (tap_win32_init(vlan, "tap", name, ifname) == -1) {
+    if (tap_win32_init(peer, "tap", name, ifname) == -1) {
         return -1;
     }
 
