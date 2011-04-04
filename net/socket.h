@@ -28,6 +28,6 @@
 #include "qemu-common.h"
 
 int net_init_socket(QemuOpts *opts, Monitor *mon,
-                    const char *name, VLANState *vlan);
+                    const char *name, VLANClientState *peer);
 
 #endif /* QEMU_NET_SOCKET_H */

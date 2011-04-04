@@ -75,7 +75,7 @@ static NetClientInfo net_vde_info = {
     .cleanup = vde_cleanup,
 };
 
-static int net_vde_init(VLANState *vlan, const char *model,
+static int net_vde_init(VLANClientState *peer, const char *model,
                         const char *name, const char *sock,
                         int port, const char *group, int mode)
 {
@@ -96,7 +96,7 @@ static int net_vde_init(VLANState *vlan, const char *model,
         return -1;
     }
 
-    nc = qemu_new_net_client(&net_vde_info, vlan, NULL, model, name);
+    nc = qemu_new_net_client(&net_vde_info, NULL, peer, model, name);
 
     snprintf(nc->info_str, sizeof(nc->info_str), "sock=%s,fd=%d",
              sock, vde_datafd(vde));
@@ -110,7 +110,8 @@ static int net_vde_init(VLANState *vlan, const char *model,
     return 0;
 }
 
-int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name, VLANState *vlan)
+int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name,
+                 VLANClientState *peer)
 {
     const char *sock;
     const char *group;
@@ -122,7 +123,7 @@ int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name, VLANState *vlan
     port = qemu_opt_get_number(opts, "port", 0);
     mode = qemu_opt_get_number(opts, "mode", 0700);
 
-    if (net_vde_init(vlan, "vde", name, sock, port, group, mode) == -1) {
+    if (net_vde_init(peer, "vde", name, sock, port, group, mode) == -1) {
         return -1;
     }
 
