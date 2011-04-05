@@ -623,71 +623,6 @@ PropertyInfo qdev_prop_netdev = {
     .set   = set_netdev,
 };
 
-/* --- vlan --- */
-
-static int print_vlan(DeviceState *dev, Property *prop, char *dest, size_t len)
-{
-    VLANState **ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (*ptr) {
-        return snprintf(dest, len, "%d", (*ptr)->id);
-    } else {
-        return snprintf(dest, len, "<null>");
-    }
-}
-
-static void get_vlan(Object *obj, Visitor *v, void *opaque,
-                     const char *name, Error **errp)
-{
-    DeviceState *dev = DEVICE(obj);
-    Property *prop = opaque;
-    VLANState **ptr = qdev_get_prop_ptr(dev, prop);
-    int64_t id;
-
-    id = *ptr ? (*ptr)->id : -1;
-    visit_type_int(v, &id, name, errp);
-}
-
-static void set_vlan(Object *obj, Visitor *v, void *opaque,
-                     const char *name, Error **errp)
-{
-    DeviceState *dev = DEVICE(obj);
-    Property *prop = opaque;
-    VLANState **ptr = qdev_get_prop_ptr(dev, prop);
-    Error *local_err = NULL;
-    int64_t id;
-    VLANState *vlan;
-
-    if (dev->state != DEV_STATE_CREATED) {
-        error_set(errp, QERR_PERMISSION_DENIED);
-        return;
-    }
-
-    visit_type_int(v, &id, name, &local_err);
-    if (local_err) {
-        error_propagate(errp, local_err);
-        return;
-    }
-    if (id == -1) {
-        *ptr = NULL;
-        return;
-    }
-    vlan = qemu_find_vlan(id, 1);
-    if (!vlan) {
-        error_set(errp, QERR_INVALID_PARAMETER_VALUE,
-                  name, prop->info->name);
-        return;
-    }
-    *ptr = vlan;
-}
-
-PropertyInfo qdev_prop_vlan = {
-    .name  = "vlan",
-    .print = print_vlan,
-    .get   = get_vlan,
-    .set   = set_vlan,
-};
-
 /* --- pointer --- */
 
 /* Not a proper property, just for dirty hacks.  TODO Remove it!  */
@@ -1040,13 +975,6 @@ void qdev_prop_set_netdev(DeviceState *dev, const char *name, VLANClientState *v
     assert(!value || value->name);
     object_property_set_str(OBJECT(dev),
                             value ? value->name : "", name, &errp);
-    assert_no_error(errp);
-}
-
-void qdev_prop_set_vlan(DeviceState *dev, const char *name, VLANState *value)
-{
-    Error *errp = NULL;
-    object_property_set_int(OBJECT(dev), value ? value->id : -1, name, &errp);
     assert_no_error(errp);
 }
 
