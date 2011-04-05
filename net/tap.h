@@ -59,6 +59,6 @@ struct vhost_net;
 struct vhost_net *tap_get_vhost_net(VLANClientState *vc);
 
 int net_init_bridge(QemuOpts *opts, Monitor *mon, const char *name,
-                    VLANState *vlan);
+                    NetClientState *peer);
 
 #endif /* QEMU_NET_TAP_H */

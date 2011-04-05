@@ -233,7 +233,6 @@ typedef struct TextConsole TextConsole;
 typedef TextConsole QEMUConsole;
 typedef struct CharDriverState CharDriverState;
 typedef struct MACAddr MACAddr;
-typedef struct VLANState VLANState;
 typedef struct VLANClientState VLANClientState;
 typedef struct i2c_bus i2c_bus;
 typedef struct ISABus ISABus;

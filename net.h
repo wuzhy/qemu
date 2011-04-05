@@ -64,7 +64,6 @@ struct VLANClientState {
     NetClientInfo *info;
     int link_down;
     QTAILQ_ENTRY(VLANClientState) next;
-    struct VLANState *vlan;
     VLANClientState *peer;
     NetQueue *send_queue;
     char *model;
@@ -79,13 +78,6 @@ typedef struct NICState {
     void *opaque;
     bool peer_deleted;
 } NICState;
-
-struct VLANState {
-    int id;
-    QTAILQ_HEAD(, VLANClientState) clients;
-    QTAILQ_ENTRY(VLANState) next;
-    NetQueue *send_queue;
-};
 
 VLANClientState *qemu_find_netdev(const char *id);
 VLANClientState *qemu_new_net_client(NetClientInfo *info,
