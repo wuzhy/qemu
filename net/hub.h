@@ -17,6 +17,8 @@
 #include "qemu-common.h"
 
 VLANClientState *net_hub_add_port(unsigned int hub_id);
+VLANClientState *net_hub_find_client_by_name(unsigned int hub_id,
+                                             const char *name);
 void net_hub_info(Monitor *mon);
 int net_hub_id_for_client(VLANClientState *nc, unsigned int *id);
 
