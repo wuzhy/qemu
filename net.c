@@ -44,7 +44,7 @@
 # define CONFIG_NET_BRIDGE
 #endif
 
-static QTAILQ_HEAD(, VLANClientState) non_vlan_clients;
+static QTAILQ_HEAD(, VLANClientState) net_clients;
 
 int default_net = 1;
 
@@ -165,7 +165,7 @@ static char *assign_name(VLANClientState *vc1, const char *model)
     char buf[256];
     int id = 0;
 
-    QTAILQ_FOREACH(vc, &non_vlan_clients, next) {
+    QTAILQ_FOREACH(vc, &net_clients, next) {
         if (vc == vc1) {
             continue;
         }
@@ -216,7 +216,7 @@ VLANClientState *qemu_new_net_client(NetClientInfo *info,
         vc->peer = peer;
         peer->peer = vc;
     }
-    QTAILQ_INSERT_TAIL(&non_vlan_clients, vc, next);
+    QTAILQ_INSERT_TAIL(&net_clients, vc, next);
 
     vc->send_queue = qemu_new_net_queue(qemu_deliver_packet,
                                         qemu_deliver_packet_iov,
@@ -248,7 +248,7 @@ NICState *qemu_new_nic(NetClientInfo *info,
 
 static void qemu_cleanup_vlan_client(VLANClientState *vc)
 {
-    QTAILQ_REMOVE(&non_vlan_clients, vc, next);
+    QTAILQ_REMOVE(&net_clients, vc, next);
 
     if (vc->info->cleanup) {
         vc->info->cleanup(vc);
@@ -302,7 +302,7 @@ void qemu_foreach_nic(qemu_nic_foreach func, void *opaque)
 {
     VLANClientState *nc;
 
-    QTAILQ_FOREACH(nc, &non_vlan_clients, next) {
+    QTAILQ_FOREACH(nc, &net_clients, next) {
         if (nc->info->type == NET_CLIENT_TYPE_NIC) {
             func(DO_UPCAST(NICState, nc, nc), opaque);
         }
@@ -467,7 +467,7 @@ VLANClientState *qemu_find_netdev(const char *id)
 {
     VLANClientState *vc;
 
-    QTAILQ_FOREACH(vc, &non_vlan_clients, next) {
+    QTAILQ_FOREACH(vc, &net_clients, next) {
         if (vc->info->type == NET_CLIENT_TYPE_NIC)
             continue;
         if (!strcmp(vc->name, id)) {
@@ -1080,7 +1080,7 @@ void do_info_network(Monitor *mon)
     net_client_type type;
 
     monitor_printf(mon, "Devices not on any VLAN:\n");
-    QTAILQ_FOREACH(vc, &non_vlan_clients, next) {
+    QTAILQ_FOREACH(vc, &net_clients, next) {
         peer = vc->peer;
         type = vc->info->type;
         if (!peer || type == NET_CLIENT_TYPE_NIC) {
@@ -1133,7 +1133,7 @@ void net_cleanup(void)
 {
     VLANClientState *vc, *next_vc;
 
-    QTAILQ_FOREACH_SAFE(vc, &non_vlan_clients, next, next_vc) {
+    QTAILQ_FOREACH_SAFE(vc, &net_clients, next, next_vc) {
         qemu_del_vlan_client(vc);
     }
 }
@@ -1157,7 +1157,7 @@ void net_check_clients(void)
 
     net_hub_check_clients();
 
-    QTAILQ_FOREACH(vc, &non_vlan_clients, next) {
+    QTAILQ_FOREACH(vc, &net_clients, next) {
         if (!vc->peer) {
             fprintf(stderr, "Warning: %s %s has no peer\n",
                     vc->info->type == NET_CLIENT_TYPE_NIC ? "nic" : "netdev",
@@ -1204,7 +1204,7 @@ int net_init_clients(void)
 #endif
     }
 
-    QTAILQ_INIT(&non_vlan_clients);
+    QTAILQ_INIT(&net_clients);
 
     if (qemu_opts_foreach(qemu_find_opts("netdev"), net_init_netdev, NULL, 1) == -1)
         return -1;
