@@ -537,7 +537,7 @@ static int net_socket_mcast_init(VLANClientState *peer,
 
 }
 
-static int net_socket_udp_init(VLANState *vlan,
+static int net_socket_udp_init(NetClientState *peer,
                                  const char *model,
                                  const char *name,
                                  const char *rhost,
@@ -575,7 +575,7 @@ static int net_socket_udp_init(VLANState *vlan,
         return -1;
     }
 
-    s = net_socket_fd_init(vlan, model, name, fd, 0);
+    s = net_socket_fd_init(peer, model, name, fd, 0);
     if (!s) {
         return -1;
     }
@@ -678,7 +678,7 @@ int net_init_socket(QemuOpts *opts, const char *name, VLANClientState *peer)
                 return -1;
         }
 
-        if (net_socket_udp_init(vlan, "udp", name, udp, localaddr) == -1) {
+        if (net_socket_udp_init(peer, "udp", name, udp, localaddr) == -1) {
             return -1;
         }
     } else {
