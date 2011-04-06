@@ -274,7 +274,7 @@ static int net_slirp_init(NetClientState *peer, const char *model,
     return 0;
 
 error:
-    qemu_del_vlan_client(nc);
+    qemu_del_net_client(nc);
     return -1;
 }
 
