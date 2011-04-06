@@ -311,7 +311,7 @@ static void open_eth_int_source_write(OpenEthState *s,
             s->regs[INT_SOURCE] & s->regs[INT_MASK]);
 }
 
-static void open_eth_set_link_status(VLANClientState *nc)
+static void open_eth_set_link_status(NetClientState *nc)
 {
     OpenEthState *s = DO_UPCAST(NICState, nc, nc)->opaque;
 
@@ -342,7 +342,7 @@ static void open_eth_reset(void *opaque)
     open_eth_set_link_status(&s->nic->nc);
 }
 
-static int open_eth_can_receive(VLANClientState *nc)
+static int open_eth_can_receive(NetClientState *nc)
 {
     OpenEthState *s = DO_UPCAST(NICState, nc, nc)->opaque;
 
@@ -376,7 +376,7 @@ static unsigned compute_mcast_idx(const uint8_t *ep)
     return crc >> 26;
 }
 
-static ssize_t open_eth_receive(VLANClientState *nc,
+static ssize_t open_eth_receive(NetClientState *nc,
         const uint8_t *buf, size_t size)
 {
     OpenEthState *s = DO_UPCAST(NICState, nc, nc)->opaque;
@@ -487,7 +487,7 @@ static ssize_t open_eth_receive(VLANClientState *nc,
     return size;
 }
 
-static void open_eth_cleanup(VLANClientState *nc)
+static void open_eth_cleanup(NetClientState *nc)
 {
 }
 

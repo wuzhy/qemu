@@ -586,7 +586,7 @@ PropertyInfo qdev_prop_chr = {
 
 static int parse_netdev(DeviceState *dev, const char *str, void **ptr)
 {
-    VLANClientState *netdev = qemu_find_netdev(str);
+    NetClientState *netdev = qemu_find_netdev(str);
 
     if (netdev == NULL) {
         return -ENOENT;
@@ -600,7 +600,7 @@ static int parse_netdev(DeviceState *dev, const char *str, void **ptr)
 
 static const char *print_netdev(void *ptr)
 {
-    VLANClientState *netdev = ptr;
+    NetClientState *netdev = ptr;
 
     return netdev->name ? netdev->name : "";
 }
@@ -969,7 +969,7 @@ void qdev_prop_set_chr(DeviceState *dev, const char *name, CharDriverState *valu
     assert_no_error(errp);
 }
 
-void qdev_prop_set_netdev(DeviceState *dev, const char *name, VLANClientState *value)
+void qdev_prop_set_netdev(DeviceState *dev, const char *name, NetClientState *value)
 {
     Error *errp = NULL;
     assert(!value || value->name);

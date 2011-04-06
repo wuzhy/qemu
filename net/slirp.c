@@ -67,7 +67,7 @@ struct slirp_config_str {
 };
 
 typedef struct SlirpState {
-    VLANClientState nc;
+    NetClientState nc;
     QTAILQ_ENTRY(SlirpState) entry;
     Slirp *slirp;
 #ifndef _WIN32
@@ -110,7 +110,7 @@ void slirp_output(void *opaque, const uint8_t *pkt, int pkt_len)
     qemu_send_packet(&s->nc, pkt, pkt_len);
 }
 
-static ssize_t net_slirp_receive(VLANClientState *nc, const uint8_t *buf, size_t size)
+static ssize_t net_slirp_receive(NetClientState *nc, const uint8_t *buf, size_t size)
 {
     SlirpState *s = DO_UPCAST(SlirpState, nc, nc);
 
@@ -119,7 +119,7 @@ static ssize_t net_slirp_receive(VLANClientState *nc, const uint8_t *buf, size_t
     return size;
 }
 
-static void net_slirp_cleanup(VLANClientState *nc)
+static void net_slirp_cleanup(NetClientState *nc)
 {
     SlirpState *s = DO_UPCAST(SlirpState, nc, nc);
 
@@ -135,7 +135,7 @@ static NetClientInfo net_slirp_info = {
     .cleanup = net_slirp_cleanup,
 };
 
-static int net_slirp_init(VLANClientState *peer, const char *model,
+static int net_slirp_init(NetClientState *peer, const char *model,
                           const char *name, int restricted,
                           const char *vnetwork, const char *vhost,
                           const char *vhostname, const char *tftp_export,
@@ -152,7 +152,7 @@ static int net_slirp_init(VLANClientState *peer, const char *model,
 #ifndef _WIN32
     struct in_addr smbsrv = { .s_addr = 0 };
 #endif
-    VLANClientState *nc;
+    NetClientState *nc;
     SlirpState *s;
     char buf[20];
     uint32_t addr;
@@ -283,7 +283,7 @@ static SlirpState *slirp_lookup(Monitor *mon, const char *vlan,
 {
 
     if (vlan) {
-        VLANClientState *nc;
+        NetClientState *nc;
         nc = net_hub_find_client_by_name(strtol(vlan, NULL, 0), stack);
         if (!nc) {
             return NULL;
@@ -679,7 +679,7 @@ static int net_init_slirp_configs(const char *name, const char *value, void *opa
 int net_init_slirp(QemuOpts *opts,
                    Monitor *mon,
                    const char *name,
-                   VLANClientState *peer)
+                   NetClientState *peer)
 {
     struct slirp_config_str *config;
     const char *vhost;
