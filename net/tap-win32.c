@@ -718,12 +718,12 @@ int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name,
     return 0;
 }
 
-int tap_has_ufo(NetClientState *vc)
+int tap_has_ufo(NetClientState *nc)
 {
     return 0;
 }
 
-int tap_has_vnet_hdr(NetClientState *vc)
+int tap_has_vnet_hdr(NetClientState *nc)
 {
     return 0;
 }
@@ -737,11 +737,11 @@ void tap_fd_set_vnet_hdr_len(int fd, int len)
 {
 }
 
-void tap_using_vnet_hdr(NetClientState *vc, int using_vnet_hdr)
+void tap_using_vnet_hdr(NetClientState *nc, int using_vnet_hdr)
 {
 }
 
-void tap_set_offload(NetClientState *vc, int csum, int tso4,
+void tap_set_offload(NetClientState *nc, int csum, int tso4,
                      int tso6, int ecn, int ufo)
 {
 }
