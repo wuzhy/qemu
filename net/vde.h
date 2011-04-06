@@ -29,7 +29,7 @@
 
 #ifdef CONFIG_VDE
 
-int net_init_vde(QemuOpts *opts, const char *name, VLANClientState *peer);
+int net_init_vde(QemuOpts *opts, const char *name, NetClientState *peer);
 
 #endif /* CONFIG_VDE */
 
