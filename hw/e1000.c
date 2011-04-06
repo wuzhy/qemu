@@ -1119,7 +1119,7 @@ pci_e1000_uninit(PCIDevice *dev)
 
     memory_region_destroy(&d->mmio);
     memory_region_destroy(&d->io);
-    qemu_del_vlan_client(&d->nic->nc);
+    qemu_del_net_client(&d->nic->nc);
     return 0;
 }
 

@@ -774,7 +774,7 @@ static int pci_ne2000_exit(PCIDevice *pci_dev)
     NE2000State *s = &d->ne2000;
 
     memory_region_destroy(&s->io);
-    qemu_del_vlan_client(&s->nic->nc);
+    qemu_del_net_client(&s->nic->nc);
     return 0;
 }
 
