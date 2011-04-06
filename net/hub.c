@@ -226,3 +226,48 @@ int net_hub_id_for_client(VLANClientState *nc, unsigned int *id)
     }
     return -ENOENT;
 }
+
+/**
+ * Warn if hub configurations are likely wrong
+ */
+void net_hub_check_clients(void)
+{
+    NetHub *hub;
+    NetHubPort *port;
+    VLANClientState *peer;
+
+    QLIST_FOREACH(hub, &hubs, next) {
+        int has_nic = 0, has_host_dev = 0;
+
+        QLIST_FOREACH(port, &hub->ports, next) {
+            peer = port->nc.peer;
+            if (!peer) {
+                fprintf(stderr, "Warning: hub port %s has no peer\n",
+                        port->nc.name);
+                continue;
+            }
+
+            switch (peer->info->type) {
+            case NET_CLIENT_TYPE_NIC:
+                has_nic = 1;
+                break;
+            case NET_CLIENT_TYPE_USER:
+            case NET_CLIENT_TYPE_TAP:
+            case NET_CLIENT_TYPE_SOCKET:
+            case NET_CLIENT_TYPE_VDE:
+                has_host_dev = 1;
+                break;
+            default:
+                break;
+            }
+        }
+        if (has_host_dev && !has_nic) {
+            fprintf(stderr, "Warning: vlan %u with no nics\n", hub->id);
+        }
+        if (has_nic && !has_host_dev) {
+            fprintf(stderr,
+                    "Warning: vlan %u is not connected to host network\n",
+                    hub->id);
+        }
+    }
+}
