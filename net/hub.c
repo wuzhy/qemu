@@ -25,7 +25,7 @@
 typedef struct NetHub NetHub;
 
 typedef struct NetHubPort {
-    VLANClientState nc;
+    NetClientState nc;
     QLIST_ENTRY(NetHubPort) next;
     NetHub *hub;
     unsigned int id;
@@ -85,7 +85,7 @@ static NetHub *net_hub_new(unsigned int id)
     return hub;
 }
 
-static ssize_t net_hub_port_receive(VLANClientState *nc,
+static ssize_t net_hub_port_receive(NetClientState *nc,
                                     const uint8_t *buf, size_t len)
 {
     NetHubPort *port = DO_UPCAST(NetHubPort, nc, nc);
@@ -93,7 +93,7 @@ static ssize_t net_hub_port_receive(VLANClientState *nc,
     return net_hub_receive(port->hub, port, buf, len);
 }
 
-static ssize_t net_hub_port_receive_iov(VLANClientState *nc,
+static ssize_t net_hub_port_receive_iov(NetClientState *nc,
                                         const struct iovec *iov, int iovcnt)
 {
     NetHubPort *port = DO_UPCAST(NetHubPort, nc, nc);
@@ -101,7 +101,7 @@ static ssize_t net_hub_port_receive_iov(VLANClientState *nc,
     return net_hub_receive_iov(port->hub, port, iov, iovcnt);
 }
 
-static void net_hub_port_cleanup(VLANClientState *nc)
+static void net_hub_port_cleanup(NetClientState *nc)
 {
     NetHubPort *port = DO_UPCAST(NetHubPort, nc, nc);
 
@@ -118,7 +118,7 @@ static NetClientInfo net_hub_port_info = {
 
 static NetHubPort *net_hub_port_new(NetHub *hub)
 {
-    VLANClientState *nc;
+    NetClientState *nc;
     NetHubPort *port;
     unsigned int id = hub->num_ports++;
     char name[128];
@@ -140,7 +140,7 @@ static NetHubPort *net_hub_port_new(NetHub *hub)
  *
  * If there is no existing hub with the given id then a new hub is created.
  */
-VLANClientState *net_hub_add_port(unsigned int hub_id)
+NetClientState *net_hub_add_port(unsigned int hub_id)
 {
     NetHub *hub;
     NetHubPort *port;
@@ -162,12 +162,12 @@ VLANClientState *net_hub_add_port(unsigned int hub_id)
 /**
  * Find a specific client on a hub
  */
-VLANClientState *net_hub_find_client_by_name(unsigned int hub_id,
-                                             const char *name)
+NetClientState *net_hub_find_client_by_name(unsigned int hub_id,
+                                            const char *name)
 {
     NetHub *hub;
     NetHubPort *port;
-    VLANClientState *peer;
+    NetClientState *peer;
 
     QLIST_FOREACH(hub, &hubs, next) {
         if (hub->id == hub_id) {
@@ -205,7 +205,7 @@ void net_hub_info(Monitor *mon)
  *
  * @id              Pointer for hub id output, may be NULL
  */
-int net_hub_id_for_client(VLANClientState *nc, unsigned int *id)
+int net_hub_id_for_client(NetClientState *nc, unsigned int *id)
 {
     NetHub *hub;
     NetHubPort *port;
@@ -231,7 +231,7 @@ void net_hub_check_clients(void)
 {
     NetHub *hub;
     NetHubPort *port;
-    VLANClientState *peer;
+    NetClientState *peer;
 
     QLIST_FOREACH(hub, &hubs, next) {
         int has_nic = 0, has_host_dev = 0;

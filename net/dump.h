@@ -28,6 +28,6 @@
 #include "qemu-common.h"
 
 int net_init_dump(QemuOpts *opts, Monitor *mon,
-                  const char *name, VLANClientState *peer);
+                  const char *name, NetClientState *peer);
 
 #endif /* QEMU_NET_DUMP_H */
