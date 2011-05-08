@@ -536,6 +536,11 @@ void virtio_reset(void *opaque)
         vdev->vq[i].signalled_used = 0;
         vdev->vq[i].signalled_used_valid = false;
         vdev->vq[i].notification = true;
+
+        assert(!event_notifier_valid(&vdev->vq[i].guest_notifier));
+        assert(!event_notifier_valid(&vdev->vq[i].host_notifier));
+        vdev->vq[i].guest_notifier = EVENT_NOTIFIER_INITIALIZER;
+        vdev->vq[i].host_notifier = EVENT_NOTIFIER_INITIALIZER;
     }
 }
 
@@ -905,6 +910,8 @@ VirtIODevice *virtio_common_init(const char *name, uint16_t device_id,
     for(i = 0; i < VIRTIO_PCI_QUEUE_MAX; i++) {
         vdev->vq[i].vector = VIRTIO_NO_VECTOR;
         vdev->vq[i].vdev = vdev;
+        vdev->vq[i].guest_notifier = EVENT_NOTIFIER_INITIALIZER;
+        vdev->vq[i].host_notifier = EVENT_NOTIFIER_INITIALIZER;
     }
 
     vdev->name = name;

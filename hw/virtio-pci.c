@@ -281,6 +281,25 @@ void virtio_pci_reset(DeviceState *d)
     proxy->flags &= ~VIRTIO_PCI_FLAG_BUS_MASTER_BUG;
 }
 
+static void virtio_pci_queue_notify(VirtIOPCIProxy *proxy, uint32_t n)
+{
+    VirtQueue *vq;
+    EventNotifier *notifier;
+
+    if (n >= VIRTIO_PCI_QUEUE_MAX) {
+        return;
+    }
+
+    vq = virtio_get_queue(proxy->vdev, n);
+    notifier = virtio_queue_get_host_notifier(vq);
+    if (event_notifier_valid(notifier)) {
+        printf("notifying vq %u host notifier from userspace\n", n);
+        event_notifier_notify(notifier);
+    } else {
+        virtio_queue_notify_vq(vq);
+    }
+}
+
 static void virtio_ioport_write(void *opaque, uint32_t addr, uint32_t val)
 {
     VirtIOPCIProxy *proxy = opaque;
@@ -310,9 +329,7 @@ static void virtio_ioport_write(void *opaque, uint32_t addr, uint32_t val)
             vdev->queue_sel = val;
         break;
     case VIRTIO_PCI_QUEUE_NOTIFY:
-        if (val < VIRTIO_PCI_QUEUE_MAX) {
-            virtio_queue_notify(vdev, val);
-        }
+        virtio_pci_queue_notify(proxy, val);
         break;
     case VIRTIO_PCI_STATUS:
         if (!(val & VIRTIO_CONFIG_S_DRIVER_OK)) {
