@@ -17,6 +17,7 @@
 
 int event_notifier_init(EventNotifier *e, int active)
 {
+    assert(!event_notifier_valid(e));
 #ifdef CONFIG_EVENTFD
     int fd = eventfd(!!active, EFD_NONBLOCK | EFD_CLOEXEC);
     if (fd < 0)
@@ -31,6 +32,12 @@ int event_notifier_init(EventNotifier *e, int active)
 void event_notifier_cleanup(EventNotifier *e)
 {
     close(e->fd);
+    e->fd = -1;
+}
+
+bool event_notifier_valid(EventNotifier *e)
+{
+    return e->fd != -1;
 }
 
 int event_notifier_get_fd(EventNotifier *e)
@@ -58,4 +65,18 @@ int event_notifier_test(EventNotifier *e)
         assert(s == sizeof(value));
     }
     return r == sizeof(value);
+}
+
+int event_notifier_notify(EventNotifier *e)
+{
+    uint64_t value = 1;
+    int r;
+
+    assert(event_notifier_valid(e));
+    r = write(e->fd, &value, sizeof(value));
+    if (r < 0) {
+        return -errno;
+    }
+    assert(r == sizeof(value));
+    return 0;
 }
