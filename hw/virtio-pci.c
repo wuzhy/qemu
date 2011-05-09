@@ -293,8 +293,11 @@ static void virtio_pci_queue_notify(VirtIOPCIProxy *proxy, uint32_t n)
     vq = virtio_get_queue(proxy->vdev, n);
     notifier = virtio_queue_get_host_notifier(vq);
     if (event_notifier_valid(notifier)) {
+        int r;
+
         printf("notifying vq %u host notifier from userspace\n", n);
-        event_notifier_notify(notifier);
+        r = event_notifier_notify(notifier);
+        assert(r == 0);
     } else {
         virtio_queue_notify_vq(vq);
     }
