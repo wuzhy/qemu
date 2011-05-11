@@ -561,6 +561,10 @@ possible drivers and properties, use @code{-device ?} and
 ETEXI
 
 DEFHEADING()
+DEF("vhost-scsi", HAS_ARG, QEMU_OPTION_vhost_scsi,
+    "-virtio-scsi wwpn=string0,tpgt=number0\n"
+    "                add vhost-scsi device\n",
+    QEMU_ARCH_ALL)
 
 DEFHEADING(File system options:)
 

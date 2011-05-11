@@ -143,6 +143,7 @@ int main(int argc, char **argv)
 #include "qemu-options.h"
 #include "qmp-commands.h"
 #include "main-loop.h"
+#include "hw/vhost-scsi.h"
 #ifdef CONFIG_VIRTFS
 #include "fsdev/qemu-fsdev.h"
 #endif
@@ -1854,6 +1855,14 @@ static int fsdev_init_func(QemuOpts *opts, void *opaque)
 }
 #endif
 
+static int vhost_scsi_init_func(QemuOpts *opts, void *opaque)
+{
+    if (!vhost_scsi_add_opts(opts)) {
+        return -1;
+    }
+    return 0;
+}
+
 static int mon_init_func(QemuOpts *opts, void *opaque)
 {
     CharDriverState *chr;
@@ -2613,6 +2622,11 @@ int main(int argc, char **argv, char **envp)
                 }
                 break;
 #endif
+            case QEMU_OPTION_vhost_scsi:
+                if (!qemu_opts_parse(qemu_find_opts("vhost-scsi"), optarg, 0)) {
+                    exit(1);
+                }
+                break;
 #ifdef CONFIG_SLIRP
             case QEMU_OPTION_tftp:
                 legacy_tftp_prefix = optarg;
@@ -3333,6 +3347,10 @@ int main(int argc, char **argv, char **envp)
         exit(1);
     }
 #endif
+    if (qemu_opts_foreach(qemu_find_opts("vhost-scsi"),
+                          vhost_scsi_init_func, NULL, 1)) {
+        exit(1);
+    }
 
     os_daemonize();
 

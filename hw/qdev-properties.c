@@ -2,6 +2,7 @@
 #include "qdev.h"
 #include "qerror.h"
 #include "blockdev.h"
+#include "vhost-scsi.h"
 
 void *qdev_get_prop_ptr(DeviceState *dev, Property *prop)
 {
@@ -654,6 +655,37 @@ PropertyInfo qdev_prop_vlan = {
     .print = print_vlan,
     .get   = get_vlan,
     .set   = set_vlan,
+};
+
+/* --- vhost-scsi --- */
+
+static int parse_vhost_scsi(DeviceState *dev, Property *prop, const char *str)
+{
+    VHostSCSI **ptr = qdev_get_prop_ptr(dev, prop);
+
+    *ptr = find_vhost_scsi(str);
+    if (*ptr == NULL) {
+        return -ENOENT;
+    }
+    return 0;
+}
+
+static int print_vhost_scsi(DeviceState *dev, Property *prop,
+                            char *dest, size_t len)
+{
+    VHostSCSI **ptr = qdev_get_prop_ptr(dev, prop);
+
+    if (*ptr) {
+        return snprintf(dest, len, "%s", vhost_scsi_get_id(*ptr));
+    } else {
+        return snprintf(dest, len, "<null>");
+    }
+}
+
+PropertyInfo qdev_prop_vhost_scsi = {
+    .name  = "vhost-scsi",
+    .parse = parse_vhost_scsi,
+    .print = print_vhost_scsi,
 };
 
 /* --- pointer --- */

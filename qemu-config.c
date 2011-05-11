@@ -626,6 +626,21 @@ QemuOptsList qemu_boot_opts = {
     },
 };
 
+QemuOptsList qemu_vhost_scsi_opts = {
+    .name = "vhost-scsi",
+    .head = QTAILQ_HEAD_INITIALIZER(qemu_vhost_scsi_opts.head),
+    .desc = {
+        {
+            .name = "wwpn",
+            .type = QEMU_OPT_STRING,
+        }, {
+            .name = "tpgt",
+            .type = QEMU_OPT_NUMBER,
+        },
+        { /* end of list */ }
+    },
+};
+
 static QemuOptsList *vm_config_groups[32] = {
     &qemu_drive_opts,
     &qemu_chardev_opts,
@@ -641,6 +656,7 @@ static QemuOptsList *vm_config_groups[32] = {
     &qemu_machine_opts,
     &qemu_boot_opts,
     &qemu_iscsi_opts,
+    &qemu_vhost_scsi_opts,
     NULL,
 };
 
