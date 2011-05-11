@@ -1108,6 +1108,8 @@ static int virtio_scsi_exit_pci(PCIDevice *pci_dev)
 }
 
 static Property virtio_scsi_properties[] = {
+    DEFINE_PROP_VHOST_SCSI("vhost-scsi", VirtIOPCIProxy,
+                            scsi.vhost_scsi),
     DEFINE_PROP_UINT32("vectors", VirtIOPCIProxy, nvectors, 2),
     DEFINE_VIRTIO_SCSI_PROPERTIES(VirtIOPCIProxy, host_features, scsi),
     DEFINE_PROP_END_OF_LIST(),

@@ -15,6 +15,7 @@
 
 #include "qemu-common.h"
 #include "qemu-error.h"
+#include "vhost-scsi.h"
 #include "virtio-scsi.h"
 #include <hw/scsi.h>
 #include <hw/scsi-defs.h>
@@ -617,11 +618,7 @@ static void virtio_scsi_set_status(VirtIODevice *vdev, uint8_t val)
     if (start) {
         int ret;
 
-        if (!vhost_dev_query(&s->vhost_scsi, vdev)) {
-            return;
-        }
-
-        ret = virtio_scsi_vhost_start(s);
+        ret = vhost_scsi_start(s->vhost_scsi, vdev);
         if (ret < 0) {
             error_report("virtio-scsi: unable to start vhost: %s\n",
                          strerror(-ret));
@@ -630,7 +627,7 @@ static void virtio_scsi_set_status(VirtIODevice *vdev, uint8_t val)
             exit(1);
         }
     } else {
-        virtio_scsi_vhost_stop(s);
+        vhost_scsi_stop(s->vhost_scsi, vdev);
     }
 
     s->vhost_started = start;
@@ -689,6 +686,5 @@ void virtio_scsi_exit(VirtIODevice *vdev)
     /* This will stop vhost backend if appropriate. */
     virtio_scsi_set_status(vdev, 0);
 
-    vhost_dev_cleanup(&s->vhost_scsi);
     virtio_cleanup(vdev);
 }

@@ -40,9 +40,7 @@ struct vhost_vring_target {
 };
 
 typedef struct {
-    /* The tcm_vhost wwpn and tpgt */
-    char *wwpn;
-    uint16_t tpgt;
+    VHostSCSI *vhost_scsi;
 } VirtIOSCSIConf;
 
 #endif /* _QEMU_VIRTIO_SCSI_H */
