@@ -17,6 +17,17 @@
 #include "qemu-common.h"
 #include "qemu-option.h"
 
+/* TODO #include <linux/vhost.h> properly */
+/* For VHOST_SCSI_SET_ENDPOINT/VHOST_SCSI_CLEAR_ENDPOINT ioctl */
+struct vhost_vring_target {
+    unsigned char vhost_wwpn[224];
+    unsigned short vhost_tpgt;
+};
+
+#define VHOST_VIRTIO 0xAF
+#define VHOST_SCSI_SET_ENDPOINT _IOW(VHOST_VIRTIO, 0x40, struct vhost_vring_target)
+#define VHOST_SCSI_CLEAR_ENDPOINT _IOW(VHOST_VIRTIO, 0x41, struct vhost_vring_target)
+
 VHostSCSI *find_vhost_scsi(const char *id);
 const char *vhost_scsi_get_id(VHostSCSI *vs);
 

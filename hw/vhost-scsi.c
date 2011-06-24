@@ -11,6 +11,7 @@
  *
  */
 
+#include <sys/ioctl.h>
 #include "config.h"
 #include "qemu-queue.h"
 #include "vhost-scsi.h"
@@ -48,6 +49,7 @@ const char *vhost_scsi_get_id(VHostSCSI *vs)
 int vhost_scsi_start(VHostSCSI *vs, VirtIODevice *vdev)
 {
     int ret;
+    struct vhost_vring_target backend;
 
     if (!vhost_dev_query(&vs->dev, vdev)) {
         return -ENOTSUP;
@@ -60,7 +62,15 @@ int vhost_scsi_start(VHostSCSI *vs, VirtIODevice *vdev)
         return ret;
     }
 
-    /* TODO set wwpn and tpgt */
+    pstrcpy((char *)backend.vhost_wwpn, sizeof(backend.vhost_wwpn), vs->wwpn);
+    backend.vhost_tpgt = vs->tpgt;
+    ret = ioctl(vs->dev.control, VHOST_SCSI_SET_ENDPOINT, &backend);
+    if (ret < 0) {
+        ret = -errno;
+        vhost_dev_stop(&vs->dev, vdev);
+        return ret;
+    }
+
     fprintf(stderr, "vhost_scsi_start\n");
     return 0;
 }
