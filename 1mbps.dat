@@ -1,0 +1,339 @@
+test: (g=0): rw=write, bs=512-512/512-512, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0K/1,503K /s] [0/3K iops] [eta 00m:00s]
+test: (groupid=0, jobs=1): err= 0: pid=2577
+  write: io=51,200KB, bw=943KB/s, iops=1,886, runt= 54271msec
+    slat (usec): min=19, max=515K, avg=35.74, stdev=1612.30
+    clat (usec): min=1, max=998K, avg=421.89, stdev=8697.91
+     lat (usec): min=215, max=998K, avg=458.32, stdev=8852.21
+    bw (KB/s) : min=    0, max= 1729, per=126.35%, avg=1191.52, stdev=513.17
+  cpu          : usr=0.68%, sys=7.31%, ctx=102762, majf=0, minf=26
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/102400, short=0/0
+     lat (usec): 2=0.02%, 4=0.01%, 100=0.07%, 250=63.47%, 500=35.06%
+     lat (usec): 750=0.34%, 1000=0.06%
+     lat (msec): 2=0.82%, 4=0.07%, 10=0.01%, 20=0.01%, 50=0.03%
+     lat (msec): 100=0.01%, 750=0.03%, 1000=0.01%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=943KB/s, minb=966KB/s, maxb=966KB/s, mint=54271msec, maxt=54271msec
+
+Disk stats (read/write):
+  dm-0: ios=13/101913, merge=0/0, ticks=4017/228247, in_queue=232254, util=89.99%, aggrios=13/102499, aggrmerge=0/90, aggrticks=4017/166813, aggrin_queue=170639, aggrutil=89.13%
+    vda: ios=13/102499, merge=0/90, ticks=4017/166813, in_queue=170639, util=89.13%
+test: (g=0): rw=write, bs=1K-1K/1K-1K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [96.5% done] [0K/3,148K /s] [0/3K iops] [eta 00m:02s]
+test: (groupid=0, jobs=1): err= 0: pid=2585
+  write: io=51,200KB, bw=932KB/s, iops=932, runt= 54935msec
+    slat (usec): min=14, max=8,332, avg=23.73, stdev=105.25
+    clat (usec): min=1, max=3,705K, avg=1035.27, stdev=37439.37
+     lat (usec): min=216, max=3,705K, avg=1059.63, stdev=37439.88
+    bw (KB/s) : min=    0, max= 3678, per=143.56%, avg=1337.98, stdev=958.76
+  cpu          : usr=0.53%, sys=2.55%, ctx=51352, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/51200, short=0/0
+     lat (usec): 2=0.02%, 4=0.01%, 100=0.04%, 250=70.43%, 500=28.20%
+     lat (usec): 750=0.30%, 1000=0.28%
+     lat (msec): 2=0.52%, 4=0.03%, 10=0.01%, 20=0.04%, 50=0.05%
+     lat (msec): 100=0.01%, 750=0.08%, >=2000=0.01%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=932KB/s, minb=954KB/s, maxb=954KB/s, mint=54935msec, maxt=54935msec
+
+Disk stats (read/write):
+  dm-0: ios=0/50983, merge=0/0, ticks=0/213890, in_queue=213890, util=97.13%, aggrios=0/51271, aggrmerge=0/48, aggrticks=0/182123, aggrin_queue=182117, aggrutil=97.05%
+    vda: ios=0/51271, merge=0/48, ticks=0/182123, in_queue=182117, util=97.05%
+test: (g=0): rw=write, bs=2K-2K/2K-2K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [94.9% done] [0K/405K /s] [0/197 iops] [eta 00m:03s]  
+test: (groupid=0, jobs=1): err= 0: pid=2593
+  write: io=51,200KB, bw=920KB/s, iops=459, runt= 55678msec
+    slat (usec): min=14, max=33,442, avg=28.90, stdev=398.16
+    clat (usec): min=1, max=3,903K, avg=1959.71, stdev=53216.81
+     lat (usec): min=216, max=3,903K, avg=1989.27, stdev=53220.37
+    bw (KB/s) : min=   61, max= 6460, per=133.31%, avg=1225.10, stdev=1134.07
+  cpu          : usr=0.24%, sys=1.32%, ctx=25668, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/25600, short=0/0
+     lat (usec): 2=0.01%, 4=0.02%, 100=0.01%, 250=66.88%, 500=31.79%
+     lat (usec): 750=0.29%, 1000=0.20%
+     lat (msec): 2=0.47%, 4=0.02%, 10=0.01%, 20=0.02%, 50=0.06%
+     lat (msec): 100=0.01%, 750=0.21%, >=2000=0.02%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=919KB/s, minb=941KB/s, maxb=941KB/s, mint=55678msec, maxt=55678msec
+
+Disk stats (read/write):
+  dm-0: ios=0/25151, merge=0/0, ticks=0/282089, in_queue=282089, util=98.29%, aggrios=0/25659, aggrmerge=0/39, aggrticks=0/210880, aggrin_queue=210878, aggrutil=98.20%
+    vda: ios=0/25659, merge=0/39, ticks=0/210880, in_queue=210878, util=98.20%
+test: (g=0): rw=write, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [91.7% done] [0K/0K /s] [0/0 iops] [eta 00m:05s]      
+test: (groupid=0, jobs=1): err= 0: pid=2600
+  write: io=51,200KB, bw=941KB/s, iops=235, runt= 54417msec
+    slat (usec): min=13, max=6,612K, avg=552.76, stdev=58448.78
+    clat (usec): min=1, max=5,042K, avg=3693.60, stdev=74145.30
+     lat (usec): min=207, max=6,638K, avg=4247.00, stdev=94533.46
+    bw (KB/s) : min=    0, max= 1033, per=104.01%, avg=977.65, stdev=193.31
+  cpu          : usr=0.17%, sys=0.62%, ctx=12836, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/12800, short=0/0
+     lat (usec): 2=0.01%, 100=0.02%, 250=53.02%, 500=44.40%, 750=1.26%
+     lat (usec): 1000=0.12%
+     lat (msec): 2=0.40%, 4=0.03%, 20=0.12%, 50=0.16%, 750=0.42%
+     lat (msec): 2000=0.02%, >=2000=0.02%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=940KB/s, minb=963KB/s, maxb=963KB/s, mint=54417msec, maxt=54417msec
+
+Disk stats (read/write):
+  dm-0: ios=0/12078, merge=0/0, ticks=0/251022, in_queue=251022, util=99.21%, aggrios=0/12862, aggrmerge=0/43, aggrticks=0/222267, aggrin_queue=222264, aggrutil=99.14%
+    vda: ios=0/12862, merge=0/43, ticks=0/222267, in_queue=222264, util=99.14%
+test: (g=0): rw=write, bs=8K-8K/8K-8K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [93.2% done] [0K/0K /s] [0/0 iops] [eta 00m:04s]      
+test: (groupid=0, jobs=1): err= 0: pid=2607
+  write: io=51,200KB, bw=941KB/s, iops=117, runt= 54416msec
+    slat (usec): min=15, max=33,439, avg=43.10, stdev=698.99
+    clat (usec): min=2, max=4,040K, avg=7580.60, stdev=105355.37
+     lat (usec): min=226, max=4,040K, avg=7624.37, stdev=105360.30
+    bw (KB/s) : min=    2, max= 1032, per=101.86%, avg=957.53, stdev=213.27
+  cpu          : usr=0.09%, sys=0.33%, ctx=6421, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/6400, short=0/0
+     lat (usec): 4=0.02%, 100=0.03%, 250=29.34%, 500=66.12%, 750=2.36%
+     lat (usec): 1000=0.36%
+     lat (msec): 2=0.33%, 4=0.03%, 10=0.02%, 20=0.28%, 50=0.22%
+     lat (msec): 100=0.02%, 750=0.75%, 2000=0.08%, >=2000=0.05%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=940KB/s, minb=963KB/s, maxb=963KB/s, mint=54416msec, maxt=54416msec
+
+Disk stats (read/write):
+  dm-0: ios=1/5969, merge=0/0, ticks=467/237432, in_queue=241910, util=99.71%, aggrios=1/6460, aggrmerge=0/43, aggrticks=467/222411, aggrin_queue=222878, aggrutil=99.64%
+    vda: ios=1/6460, merge=0/43, ticks=467/222411, in_queue=222878, util=99.64%
+test: (g=0): rw=write, bs=64K-64K/64K-64K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [98.3% done] [0K/0K /s] [0/0 iops] [eta 00m:01s]     
+test: (groupid=0, jobs=1): err= 0: pid=2615
+  write: io=51,200KB, bw=902KB/s, iops=14, runt= 56779msec
+    slat (usec): min=19, max=7,124K, avg=9080.96, stdev=251884.21
+    clat (usec): min=308, max=5,645K, avg=61883.27, stdev=394928.06
+     lat (usec): min=449, max=7,150K, avg=70965.13, stdev=467716.04
+    bw (KB/s) : min=    8, max= 1025, per=107.75%, avg=970.81, stdev=204.00
+  cpu          : usr=0.01%, sys=0.05%, ctx=811, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/800, short=0/0
+     lat (usec): 500=54.87%, 750=35.88%, 1000=0.88%
+     lat (msec): 2=0.25%, 4=0.38%, 10=0.25%, 20=1.12%, 50=1.88%
+     lat (msec): 100=0.12%, 750=1.12%, 1000=1.00%, 2000=1.88%, >=2000=0.38%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=901KB/s, minb=923KB/s, maxb=923KB/s, mint=56779msec, maxt=56779msec
+
+Disk stats (read/write):
+  dm-0: ios=0/866, merge=0/0, ticks=0/223017, in_queue=228660, util=99.93%, aggrios=0/862, aggrmerge=0/41, aggrticks=0/203954, aggrin_queue=203954, aggrutil=99.91%
+    vda: ios=0/862, merge=0/41, ticks=0/203954, in_queue=203954, util=99.91%
+test: (g=0): rw=write, bs=128K-128K/128K-128K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [98.3% done] [0K/0K /s] [0/0 iops] [eta 00m:01s]     
+test: (groupid=0, jobs=1): err= 0: pid=2622
+  write: io=51,200KB, bw=898KB/s, iops=7, runt= 57016msec
+    slat (usec): min=23, max=8,082K, avg=20524.64, stdev=404090.96
+    clat (usec): min=582, max=5,767K, avg=121981.91, stdev=585587.60
+     lat (usec): min=725, max=8,200K, avg=142507.73, stdev=711337.27
+    bw (KB/s) : min=   15, max= 1026, per=109.47%, avg=981.96, stdev=193.76
+  cpu          : usr=0.01%, sys=0.03%, ctx=412, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/400, short=0/0
+     lat (usec): 750=42.75%, 1000=24.00%
+     lat (msec): 2=20.75%, 10=0.50%, 20=0.75%, 50=4.50%, 250=0.25%
+     lat (msec): 750=0.75%, 1000=1.25%, 2000=3.50%, >=2000=1.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=897KB/s, minb=919KB/s, maxb=919KB/s, mint=57016msec, maxt=57016msec
+
+Disk stats (read/write):
+  dm-0: ios=0/492, merge=0/0, ticks=0/172695, in_queue=172695, util=99.91%, aggrios=0/470, aggrmerge=0/36, aggrticks=0/166070, aggrin_queue=166070, aggrutil=99.89%
+    vda: ios=0/470, merge=0/36, ticks=0/166070, in_queue=166070, util=99.89%
+test: (g=0): rw=write, bs=128K-128K/128K-128K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [96.6% done] [0K/0K /s] [0/0 iops] [eta 00m:02s]     
+test: (groupid=0, jobs=1): err= 0: pid=2626
+  write: io=51,200KB, bw=907KB/s, iops=7, runt= 56462msec
+    slat (usec): min=22, max=8,079K, avg=20360.73, stdev=403935.41
+    clat (usec): min=589, max=5,632K, avg=120760.03, stdev=536735.73
+     lat (usec): min=712, max=8,187K, avg=141121.76, stdev=671347.90
+    bw (KB/s) : min=   15, max= 1025, per=108.69%, avg=984.75, stdev=190.25
+  cpu          : usr=0.00%, sys=0.04%, ctx=411, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/400, short=0/0
+     lat (usec): 750=52.00%, 1000=23.25%
+     lat (msec): 2=10.75%, 4=1.50%, 10=0.25%, 20=1.25%, 50=3.75%
+     lat (msec): 250=0.25%, 500=0.25%, 750=0.75%, 1000=1.00%, 2000=3.50%
+     lat (msec): >=2000=1.50%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=906KB/s, minb=928KB/s, maxb=928KB/s, mint=56462msec, maxt=56462msec
+
+Disk stats (read/write):
+  dm-0: ios=0/466, merge=0/0, ticks=0/199397, in_queue=199801, util=99.93%, aggrios=0/462, aggrmerge=0/28, aggrticks=0/186071, aggrin_queue=186071, aggrutil=99.90%
+    vda: ios=0/462, merge=0/28, ticks=0/186071, in_queue=186071, util=99.90%
+test: (g=0): rw=write, bs=256K-256K/256K-256K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [93.8% done] [0K/0K /s] [0/0 iops] [eta 00m:03s]     
+test: (groupid=0, jobs=1): err= 0: pid=2633
+  write: io=51,200KB, bw=1,135KB/s, iops=4, runt= 45100msec
+    slat (usec): min=29, max=7,058K, avg=35513.48, stdev=499044.93
+    clat (msec): min=1, max=6,554, avg=189.94, stdev=1050.37
+     lat (msec): min=1, max=7,098, avg=225.46, stdev=1158.32
+    bw (KB/s) : min=   36, max= 2503, per=96.02%, avg=1089.86, stdev=722.70
+  cpu          : usr=0.01%, sys=0.02%, ctx=208, majf=0, minf=24
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/200, short=0/0
+
+     lat (msec): 2=58.00%, 4=22.00%, 10=1.50%, 20=4.00%, 50=11.00%
+     lat (msec): 100=0.50%, >=2000=3.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=1,135KB/s, minb=1,162KB/s, maxb=1,162KB/s, mint=45100msec, maxt=45100msec
+
+Disk stats (read/write):
+  dm-0: ios=0/266, merge=0/0, ticks=0/349073, in_queue=410345, util=99.90%, aggrios=0/254, aggrmerge=0/39, aggrticks=0/300675, aggrin_queue=300675, aggrutil=99.87%
+    vda: ios=0/254, merge=0/39, ticks=0/300675, in_queue=300675, util=99.87%
+test: (g=0): rw=write, bs=512K-512K/512K-512K, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [96.2% done] [0K/0K /s] [0/0 iops] [eta 00m:02s]     
+test: (groupid=0, jobs=1): err= 0: pid=2642
+  write: io=51,200KB, bw=1,040KB/s, iops=2, runt= 49253msec
+    slat (usec): min=48, max=3,032, avg=114.21, stdev=305.30
+    clat (msec): min=2, max=8,847, avg=492.32, stdev=1923.15
+     lat (msec): min=2, max=8,847, avg=492.43, stdev=1923.27
+    bw (KB/s) : min=   59, max= 2003, per=98.41%, avg=1022.50, stdev=614.79
+  cpu          : usr=0.00%, sys=0.02%, ctx=106, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/100, short=0/0
+
+     lat (msec): 4=51.00%, 10=18.00%, 20=7.00%, 50=15.00%, 100=3.00%
+     lat (msec): >=2000=6.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=1,039KB/s, minb=1,064KB/s, maxb=1,064KB/s, mint=49253msec, maxt=49253msec
+
+Disk stats (read/write):
+  dm-0: ios=0/178, merge=0/0, ticks=0/204659, in_queue=224540, util=99.91%, aggrios=0/151, aggrmerge=0/38, aggrticks=0/108535, aggrin_queue=108535, aggrutil=99.87%
+    vda: ios=0/151, merge=0/38, ticks=0/108535, in_queue=108535, util=99.87%
+test: (g=0): rw=write, bs=1M-1M/1M-1M, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0K/138K /s] [0/0 iops] [eta 00m:00s] 
+test: (groupid=0, jobs=1): err= 0: pid=2649
+  write: io=51,200KB, bw=1,194KB/s, iops=1, runt= 42883msec
+    slat (usec): min=79, max=94,291, avg=2387.48, stdev=13366.42
+    clat (msec): min=4, max=11,278, avg=854.56, stdev=2850.11
+     lat (msec): min=4, max=11,278, avg=856.95, stdev=2849.49
+    bw (KB/s) : min=  882, max= 1839, per=99.73%, avg=1189.75, stdev=437.63
+  cpu          : usr=0.00%, sys=0.01%, ctx=57, majf=0, minf=25
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/50, short=0/0
+
+     lat (msec): 10=38.00%, 20=18.00%, 50=20.00%, 100=14.00%, 250=2.00%
+     lat (msec): >=2000=8.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=1,193KB/s, minb=1,222KB/s, maxb=1,222KB/s, mint=42883msec, maxt=42883msec
+
+Disk stats (read/write):
+  dm-0: ios=0/176, merge=0/0, ticks=0/434584, in_queue=522186, util=84.59%, aggrios=0/145, aggrmerge=0/38, aggrticks=0/483688, aggrin_queue=483688, aggrutil=99.84%
+    vda: ios=0/145, merge=0/38, ticks=0/483688, in_queue=483688, util=99.84%
+test: (g=0): rw=write, bs=2M-2M/2M-2M, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [93.4% done] [0K/0K /s] [0/0 iops] [eta 00m:04s]    
+test: (groupid=0, jobs=1): err= 0: pid=2656
+  write: io=51,200KB, bw=907KB/s, iops=0, runt= 56425msec
+    slat (usec): min=149, max=8,062K, avg=324358.12, stdev=1612031.89
+    clat (msec): min=8, max=7,963, avg=1931.41, stdev=3084.90
+     lat (msec): min=9, max=8,134, avg=2255.77, stdev=3295.44
+    bw (KB/s) : min=  251, max= 1028, per=99.85%, avg=905.67, stdev=259.71
+  cpu          : usr=0.00%, sys=0.01%, ctx=32, majf=0, minf=24
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/25, short=0/0
+
+     lat (msec): 10=8.00%, 20=8.00%, 50=24.00%, 100=28.00%, >=2000=32.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=907KB/s, minb=929KB/s, maxb=929KB/s, mint=56425msec, maxt=56425msec
+
+Disk stats (read/write):
+  dm-0: ios=4/181, merge=0/0, ticks=6902/544633, in_queue=551859, util=99.91%, aggrios=4/151, aggrmerge=0/37, aggrticks=6980/422988, aggrin_queue=429968, aggrutil=99.92%
+    vda: ios=4/151, merge=0/37, ticks=6980/422988, in_queue=429968, util=99.92%
+test: (g=0): rw=write, bs=4M-4M/4M-4M, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:13Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:13Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:13Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:13Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:12Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:12Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:12Jobs: 1 (f=1): [W] [inf% done] [0K/0K /s] [0/0 iops] [eta 1158050441d:07h:00m:12Jobs: 1 (f=1): [W] [8.1% done] [0K/990K /s] [0/0 iops] [eta 00m:57s]            Jobs: 1 (f=1): [W] [88.9% done] [0K/0K /s] [0/0 iops] [eta 00m:07s]    
+test: (groupid=0, jobs=1): err= 0: pid=2694
+  write: io=53,248KB, bw=951KB/s, iops=0, runt= 55981msec
+    slat (usec): min=308, max=99,165, avg=9423.77, stdev=27118.23
+    clat (msec): min=46, max=12,004, avg=4293.90, stdev=5115.17
+     lat (msec): min=47, max=12,103, avg=4303.33, stdev=5126.37
+    bw (KB/s) : min=  338, max= 1444, per=97.48%, avg=927.00, stdev=365.90
+  cpu          : usr=0.00%, sys=0.01%, ctx=19, majf=0, minf=24
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/13, short=0/0
+
+     lat (msec): 50=7.69%, 100=23.08%, 250=23.08%, >=2000=46.15%
+
+Run status group 0 (all jobs):
+  WRITE: io=53,248KB, aggrb=951KB/s, minb=974KB/s, maxb=974KB/s, mint=55981msec, maxt=55981msec
+
+Disk stats (read/write):
+  dm-0: ios=0/179, merge=0/0, ticks=0/857023, in_queue=954515, util=99.90%, aggrios=0/158, aggrmerge=0/45, aggrticks=0/799098, aggrin_queue=799098, aggrutil=99.87%
+    vda: ios=0/158, merge=0/45, ticks=0/799098, in_queue=799098, util=99.87%
+test: (g=0): rw=write, bs=10M-10M/10M-10M, ioengine=libaio, iodepth=1
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0K/1,115K /s] [0/0 iops] [eta 00m:00s]
+test: (groupid=0, jobs=1): err= 0: pid=2701
+  write: io=51,200KB, bw=1,025KB/s, iops=0, runt= 49928msec
+    slat (usec): min=902, max=185K, avg=37668.00, stdev=82084.39
+    clat (msec): min=203, max=17,994, avg=9947.50, stdev=8967.29
+     lat (msec): min=204, max=18,179, avg=9985.18, stdev=9008.75
+    bw (KB/s) : min=  563, max= 2083, per=105.63%, avg=1082.67, stdev=866.53
+  cpu          : usr=0.00%, sys=0.01%, ctx=9, majf=0, minf=24
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued r/w: total=0/5, short=0/0
+
+     lat (msec): 250=20.00%, 500=20.00%, >=2000=60.00%
+
+Run status group 0 (all jobs):
+  WRITE: io=51,200KB, aggrb=1,025KB/s, minb=1,050KB/s, maxb=1,050KB/s, mint=49928msec, maxt=49928msec
+
+Disk stats (read/write):
+  dm-0: ios=0/158, merge=0/0, ticks=0/883525, in_queue=890761, util=64.33%, aggrios=2/135, aggrmerge=0/34, aggrticks=10798/1123673, aggrin_queue=1134490, aggrutil=99.80%
+    vda: ios=2/135, merge=0/34, ticks=10798/1123673, in_queue=1134490, util=99.80%
