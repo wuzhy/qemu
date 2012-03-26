@@ -1231,3 +1231,38 @@ int net_client_parse(QemuOptsList *opts_list, const char *optarg)
     default_net = 0;
     return 0;
 }
+
+static int net_dev_init(HOSTDevice *host_dev)
+{
+    NETDevice *net_dev = NET_DEVICE(host_dev);
+    NETDeviceClass *dc = NETDEV_GET_CLASS(host_dev);
+
+    if (dc->init) {
+        return dc->init(net_dev);
+    }
+
+    return 0;
+}
+
+static void net_class_init(ObjectClass *klass, void *data)
+{
+
+    HOSTDeviceClass *k = HOSTDEV_CLASS(klass);
+
+    k->init = net_dev_init;
+}
+
+static TypeInfo net_type = {
+    .name          = TYPE_NETDEV,
+    .parent        = TYPE_HOSTDEV,
+    .instance_size = sizeof(NETDevice),
+    .class_init    = net_class_init,
+};
+
+static void net_register_types(void)
+{
+    type_register_static(&net_type);
+}
+
+type_init(net_register_types)
+

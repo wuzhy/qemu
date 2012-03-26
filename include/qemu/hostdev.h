@@ -119,7 +119,7 @@ extern hostdevPropertyInfo hostdev_prop_netdev;
     DEFINE_HOSTDEV_PROP(_n, _s, _f, hostdev_prop_string, char*)
 
 HOSTDevice *hostdev_device_create(const char *type);
-int hostdev_device_init(HOSTDevice *dev, const char *type, const char *id);
+int hostdev_device_init(HOSTDevice *dev, gchar *id);
 void hostdev_prop_set_string(HOSTDevice *dev,
                              const char *name, char *value);
 void hostdev_prop_set_peer(HOSTDevice *dev,

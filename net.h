@@ -7,6 +7,33 @@
 #include "qemu-option.h"
 #include "net/queue.h"
 #include "vmstate.h"
+#include "qemu/hostdev.h"
+
+typedef struct NETDevice NETDevice;
+
+#define TYPE_NETDEV "net-dev"
+#define NET_DEVICE(obj) \
+     OBJECT_CHECK(NETDevice, (obj), TYPE_NETDEV)
+#define NETDEV_CLASS(klass) \
+     OBJECT_CLASS_CHECK(NETDeviceClass, (klass), TYPE_NETDEV)
+#define NETDEV_GET_CLASS(obj) \
+     OBJECT_GET_CLASS(NETDeviceClass, (obj), TYPE_NETDEV)
+
+typedef struct NETDeviceClass {
+    HOSTDeviceClass parent_class;
+    int (*init)(NETDevice *net_dev);
+} NETDeviceClass;
+
+struct NETDevice {
+    /*< private >*/
+    HOSTDevice host_dev;
+
+    /*< public >*/
+    QemuOpts *opts;
+    Monitor *mon;
+    const char *name;
+    NetClientState *peer;
+};
 
 struct MACAddr {
     uint8_t a[6];

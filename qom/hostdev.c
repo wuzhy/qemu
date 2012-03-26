@@ -58,10 +58,9 @@ HOSTDevice *hostdev_device_create(const char *type)
     return hostdev;
 }
 
-int hostdev_device_init(HOSTDevice *dev, const char *type, const char *id)
+int hostdev_device_init(HOSTDevice *dev, gchar *id)
 {
     HOSTDeviceClass *dc = HOSTDEV_GET_CLASS(dev);
-    gchar *dev_id;
     int rc;
 
     rc = dc->init(dev);
@@ -70,16 +69,9 @@ int hostdev_device_init(HOSTDevice *dev, const char *type, const char *id)
         return rc;
     }
 
-    if (id) {
-        dev_id = g_strdup(id);
-    } else {
-        static int anon_count;
-        dev_id = g_strdup_printf("%s[%d]", (char *)type, anon_count++);
-    }
-
-    object_property_add_child(hostdev_get_hostdev(), dev_id,
+    object_property_add_child(hostdev_get_hostdev(), id,
                               OBJECT(dev), NULL);
-    g_free(dev_id);
+    g_free(id);
 
     return 0;
 }
@@ -284,12 +276,12 @@ hostdevPropertyInfo hostdev_prop_string = {
     .get   = get_string,
     .set   = set_string,
 };
-/*
+
 static char *hostdev_get_type(Object *obj, Error **errp)
 {
     return g_strdup(object_get_typename(obj));
 }
-*/
+
 static void hostdev_property_add_static(HOSTDevice *dev, hostdevProperty *prop,
                                         Error **errp)
 {
@@ -313,7 +305,7 @@ static void hostdev_init(Object *obj)
         hostdev_property_add_static(s, prop, NULL);
     }
 
-    //object_property_add_str(OBJECT(s), "type", hostdev_get_type, NULL, NULL);
+    object_property_add_str(OBJECT(s), "type", hostdev_get_type, NULL, NULL);
 }
 
 static TypeInfo hostdev_type_info = {
