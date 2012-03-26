@@ -27,7 +27,6 @@
 #include "net.h"
 #include "qemu-common.h"
 
-int net_init_dump(QemuOpts *opts, Monitor *mon,
-                  const char *name, NetClientState *peer);
+int net_init_dump(NETDevice *net_dev);
 
 #endif /* QEMU_NET_DUMP_H */

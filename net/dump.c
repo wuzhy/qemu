@@ -145,12 +145,16 @@ static int net_dump_init(NetClientState *peer, const char *device,
     return 0;
 }
 
-int net_init_dump(QemuOpts *opts, Monitor *mon, const char *name,
-                  NetClientState *peer)
+int net_init_dump(NETDevice *net_dev)
 {
     int len;
     const char *file;
     char def_file[128];
+
+    QemuOpts *opts = net_dev->opts;
+    //Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
 
     assert(peer);
 
