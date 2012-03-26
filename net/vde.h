@@ -26,11 +26,11 @@
 
 #include "qemu-common.h"
 #include "qemu-option.h"
+#include "qemu/hostdev.h"
 
 #ifdef CONFIG_VDE
 
-int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name,
-                 NetClientState *peer);
+int net_init_vde(NETDevice *net_dev);
 
 #endif /* CONFIG_VDE */
 

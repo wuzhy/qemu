@@ -110,12 +110,16 @@ static int net_vde_init(NetClientState *peer, const char *model,
     return 0;
 }
 
-int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name,
-                 NetClientState *peer)
+int net_init_vde(HOSTDevice *net_dev)
 {
     const char *sock;
     const char *group;
     int port, mode;
+
+    QemuOpts *opts = net_dev->opts;
+    Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
 
     sock  = qemu_opt_get(opts, "sock");
     group = qemu_opt_get(opts, "group");
@@ -129,3 +133,29 @@ int net_init_vde(QemuOpts *opts, Monitor *mon, const char *name,
 
     return 0;
 }
+
+static hostdevProperty net_vde_properties[] = {
+    DEFINE_HOSTDEV_PROP_END_OF_LIST(),
+};
+
+static void net_vde_class_init(ObjectClass *klass, void *data)
+{
+    HOSTDeviceClass *k = HOSTDEV_CLASS(klass);
+
+    k->init = net_init_vde;
+    k->props = net_vde_properties;
+}
+
+static TypeInfo net_vde_type = {
+    .name          = "vde",
+    .parent        = TYPE_HOSTDEV,
+    .instance_size = sizeof(NetClientState),
+    .class_init    = net_vde_class_init,
+};
+
+static void net_vde_register_types(void)
+{
+    type_register_static(&net_user_type);
+}
+
+type_init(net_vde_register_types)
