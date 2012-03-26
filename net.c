@@ -549,14 +549,16 @@ int net_handle_fd_param(Monitor *mon, const char *param)
     return fd;
 }
 
-static int net_init_nic(QemuOpts *opts,
-                        Monitor *mon,
-                        const char *name,
-                        NetClientState *peer)
+static int net_init_nic(NETDevice *host_dev)
 {
     int idx;
     NICInfo *nd;
     const char *netdev;
+
+    QemuOpts *opts = host_dev->opts;
+    //Monitor *mon = host_dev->mon;
+    char *name = g_strdup(host_dev->name);
+    NetClientState *peer = host_dev->peer;
 
     idx = nic_get_free_idx();
     if (idx == -1 || nb_nics >= MAX_NICS) {
