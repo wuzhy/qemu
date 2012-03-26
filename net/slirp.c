@@ -676,10 +676,7 @@ static int net_init_slirp_configs(const char *name, const char *value, void *opa
     return 0;
 }
 
-int net_init_slirp(QemuOpts *opts,
-                   Monitor *mon,
-                   const char *name,
-                   NetClientState *peer)
+int net_init_slirp(NETDevice *net_dev)
 {
     struct slirp_config_str *config;
     const char *vhost;
@@ -694,6 +691,11 @@ int net_init_slirp(QemuOpts *opts,
     char *vnet = NULL;
     int restricted = 0;
     int ret;
+
+    QemuOpts *opts = net_dev->opts;
+    //Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
 
     vhost       = qemu_opt_get(opts, "host");
     vhostname   = qemu_opt_get(opts, "hostname");
@@ -777,3 +779,35 @@ int net_slirp_parse_legacy(QemuOptsList *opts_list, const char *optarg, int *ret
     return 1;
 }
 
+static hostdevProperty net_user_properties[] = {
+    DEFINE_HOSTDEV_PROP_INT32("link_down", NetClientState,link_down, 0),
+    DEFINE_HOSTDEV_PROP_PEER("peer", NetClientState, peer),
+    DEFINE_HOSTDEV_PROP_STRING("name", NetClientState, name),
+    //DEFINE_HOSTDEV_PROP_BIT("receive_disabled", NetClientState, receive_disabled, 0, true),
+    DEFINE_HOSTDEV_PROP_END_OF_LIST(),
+};
+
+static void net_user_class_init(ObjectClass *klass, void *data)
+{
+    NETDeviceClass *k = NETDEV_CLASS(klass);
+    HOSTDeviceClass *dc = HOSTDEV_CLASS(klass);
+
+    k->init = net_init_slirp;
+    dc->props = net_user_properties;
+}
+
+static TypeInfo net_user_type = {
+    .name          = "user",
+    .parent        = TYPE_NETDEV,
+    .instance_size = sizeof(NetClientState),
+    .class_init    = net_user_class_init,
+};
+
+static void net_user_register_types(void)
+{
+#ifdef CONFIG_SLIRP
+    type_register_static(&net_user_type);
+#endif
+}
+
+type_init(net_user_register_types)
