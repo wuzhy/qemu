@@ -512,11 +512,15 @@ static int net_bridge_run_helper(const char *helper, const char *bridge)
     return -1;
 }
 
-int net_init_bridge(QemuOpts *opts, Monitor *mon, const char *name,
-                    NetClientState *peer)
+int net_init_bridge(NETDevice *net_dev)
 {
     TAPState *s;
     int fd, vnet_hdr;
+
+    QemuOpts *opts = net_dev->opts;
+    //Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
 
     if (!qemu_opt_get(opts, "br")) {
         qemu_opt_set(opts, "br", DEFAULT_BRIDGE_INTERFACE);
@@ -583,12 +587,16 @@ static int net_tap_init(QemuOpts *opts, int *vnet_hdr)
     return fd;
 }
 
-int net_init_tap(QemuOpts *opts, Monitor *mon, const char *name,
-                 NetClientState *peer)
+int net_init_tap(NETDevice *net_dev)
 {
     TAPState *s;
     int fd, vnet_hdr = 0;
     const char *model;
+
+    QemuOpts *opts = net_dev->opts;
+    Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
 
     if (qemu_opt_get(opts, "fd")) {
         if (qemu_opt_get(opts, "ifname") ||
@@ -715,3 +723,51 @@ VHostNetState *tap_get_vhost_net(NetClientState *nc)
     assert(nc->info->type == NET_CLIENT_TYPE_TAP);
     return s->vhost_net;
 }
+
+static hostdevProperty net_tap_properties[] = {
+    DEFINE_HOSTDEV_PROP_END_OF_LIST(),
+};
+
+static void net_tap_class_init(ObjectClass *klass, void *data)
+{
+    NETDeviceClass *k = NETDEV_CLASS(klass);
+    HOSTDeviceClass *dc = HOSTDEV_CLASS(klass);
+
+    k->init = net_init_tap;
+    dc->props = net_tap_properties;
+}
+
+static TypeInfo net_tap_type = {
+    .name          = "tap",
+    .parent        = TYPE_NETDEV,
+    .instance_size = sizeof(NetClientState),
+    .class_init    = net_tap_class_init,
+};
+
+static hostdevProperty net_bridge_properties[] = {
+    DEFINE_HOSTDEV_PROP_END_OF_LIST(),
+};
+
+static void net_bridge_class_init(ObjectClass *klass, void *data)
+{
+    NETDeviceClass *k = NETDEV_CLASS(klass);
+    HOSTDeviceClass *dc = HOSTDEV_CLASS(klass);
+
+    k->init = net_init_bridge;
+    dc->props = net_bridge_properties;
+}
+
+static TypeInfo net_bridge_type = {
+    .name          = "bridge",
+    .parent        = TYPE_NETDEV,
+    .instance_size = sizeof(NetClientState),
+    .class_init    = net_bridge_class_init,
+};
+
+static void net_tap_register_types(void)
+{
+    type_register_static(&net_tap_type);
+    type_register_static(&net_bridge_type);
+}
+
+type_init(net_tap_register_types)
