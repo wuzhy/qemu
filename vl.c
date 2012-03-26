@@ -2299,8 +2299,6 @@ int main(int argc, char **argv, char **envp)
 #endif
     }
 
-    module_call_init(MODULE_INIT_QOM);
-
     runstate_init();
 
     init_clocks();
@@ -3381,10 +3379,6 @@ int main(int argc, char **argv, char **envp)
     }
     configure_icount(icount_option);
 
-    if (net_init_clients() < 0) {
-        exit(1);
-    }
-
     /* init the bluetooth world */
     if (foreach_device_config(DEV_BT, bt_parse))
         exit(1);
@@ -3474,6 +3468,8 @@ int main(int argc, char **argv, char **envp)
     if (foreach_device_config(DEV_DEBUGCON, debugcon_parse) < 0)
         exit(1);
 
+    module_call_init(MODULE_INIT_QOM);
+
     /* must be after qdev registration but before machine init */
     if (vga_model) {
         select_vgahw(vga_model);
@@ -3512,6 +3508,10 @@ int main(int argc, char **argv, char **envp)
     if (usb_enabled) {
         if (foreach_device_config(DEV_USB, usb_parse) < 0)
             exit(1);
+    }
+
+    if (net_init_clients() < 0) {
+        exit(1);
     }
 
     /* init generic devices */

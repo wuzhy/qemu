@@ -624,10 +624,7 @@ static int net_init_nic(QemuOpts *opts,
         .help = "identifier for monitor commands", \
      }
 
-typedef int NetClientInitFunc(QemuOpts *opts,
-                              Monitor *mon,
-                              const char *name,
-                              NetClientState *peer);
+typedef int NetClientInitFunc(NETDevice *host_dev);
 
 /* magic number, but compiler will warn if too small */
 #define NET_MAX_DESC 20
@@ -956,7 +953,13 @@ int net_client_init(Monitor *mon, QemuOpts *opts, int is_netdev)
 
             ret = 0;
             if (net_client_types[i].init) {
-                ret = net_client_types[i].init(opts, mon, name, peer);
+                NETDevice host_dev;
+                host_dev.mon = mon;
+                host_dev.opts = opts;
+                host_dev.name = g_strdup(name);
+                host_dev.peer = peer;
+                ret = net_client_types[i].init(&host_dev);
+                //ret = net_client_types[i].init(opts, mon, name, peer);
                 if (ret < 0) {
                     /* TODO push error reporting into init() methods */
                     qerror_report(QERR_DEVICE_INIT_FAILED, type);
@@ -970,6 +973,108 @@ int net_client_init(Monitor *mon, QemuOpts *opts, int is_netdev)
     qerror_report(QERR_INVALID_PARAMETER_VALUE, "type",
                   "a network client type");
     return -1;
+}
+
+static bool netdev_device_add(Monitor *mon,
+                              QemuOpts *opts,
+                              const char *name,
+                              NetClientState *peer)
+{
+    const char *type, *id;
+    NETDevice *net_dev;
+    HOSTDevice *host_dev;
+
+    type = qemu_opt_get(opts, "type");
+    if (!type) {
+        qerror_report(QERR_MISSING_PARAMETER, "type");
+        return false;
+    }
+
+    host_dev = hostdev_device_create(type);
+    if (!host_dev) {
+        return false;
+    }
+
+    net_dev = NET_DEVICE(host_dev);
+    net_dev->mon = mon;
+    net_dev->opts = opts;
+    net_dev->name = g_strdup(name);
+    net_dev->peer = peer;
+
+    hostdev_prop_set_peer(&net_dev->host_dev, "peer", peer);
+    hostdev_prop_set_string(&net_dev->host_dev, "name", g_strdup(name));
+    //hostdev_prop_set_int32(&net_dev->host_dev, "link_down", link_down);
+    //hostdev_prop_set_string(&net_dev->host_dev, "model", g_strdup(model));
+    //hostdev_prop_set_bit(&net_dev->host_dev, "receive_disabled", receive_disabled);
+
+    gchar *dev_id;
+    id = qemu_opts_id(opts);
+    if (id) {
+        dev_id = g_strdup(id);
+    } else {
+        static int anon_count;
+        dev_id = g_strdup_printf("%s[%d]", (char *)type, anon_count++);
+    }
+
+    if (hostdev_device_init(&net_dev->host_dev, dev_id)) {
+        return false;
+    }
+
+    return true;
+}
+
+static int net_client_netdev_init(Monitor *mon, QemuOpts *opts, int is_netdev)
+{
+    const char *name;
+    const char *type;
+
+    type = qemu_opt_get(opts, "type");
+    if (!type) {
+        qerror_report(QERR_MISSING_PARAMETER, "type");
+        return -1;
+    }
+
+    if (is_netdev) {
+        if (strcmp(type, "tap") != 0 &&
+#ifdef CONFIG_NET_BRIDGE
+            strcmp(type, "bridge") != 0 &&
+#endif
+#ifdef CONFIG_SLIRP
+            strcmp(type, "user") != 0 &&
+#endif
+#ifdef CONFIG_VDE
+            strcmp(type, "vde") != 0 &&
+#endif
+            strcmp(type, "socket") != 0) {
+            qerror_report(QERR_INVALID_PARAMETER_VALUE, "type",
+                          "a netdev backend type");
+            return -1;
+        }
+
+        if (qemu_opt_get(opts, "vlan")) {
+            qerror_report(QERR_INVALID_PARAMETER, "vlan");
+            return -1;
+        }
+        if (qemu_opt_get(opts, "name")) {
+            qerror_report(QERR_INVALID_PARAMETER, "name");
+            return -1;
+        }
+        if (!qemu_opts_id(opts)) {
+            qerror_report(QERR_MISSING_PARAMETER, "id");
+            return -1;
+        }
+    }
+
+    name = qemu_opts_id(opts);
+    if (!name) {
+        name = qemu_opt_get(opts, "name");
+    }
+
+    if (!netdev_device_add(mon, opts, name, NULL)) {
+        return -1;
+    }
+
+    return 0;
 }
 
 static int net_host_check_device(const char *device)
@@ -1188,7 +1293,7 @@ static int net_init_client(QemuOpts *opts, void *dummy)
 
 static int net_init_netdev(QemuOpts *opts, void *dummy)
 {
-    return net_client_init(NULL, opts, 1);
+    return net_client_netdev_init(NULL, opts, 1);
 }
 
 int net_init_clients(void)
@@ -1235,7 +1340,7 @@ int net_client_parse(QemuOptsList *opts_list, const char *optarg)
 static int net_dev_init(HOSTDevice *host_dev)
 {
     NETDevice *net_dev = NET_DEVICE(host_dev);
-    NETDeviceClass *dc = NETDEV_GET_CLASS(host_dev);
+    NETDeviceClass *dc = NETDEV_GET_CLASS(net_dev);
 
     if (dc->init) {
         return dc->init(net_dev);
@@ -1256,6 +1361,7 @@ static TypeInfo net_type = {
     .name          = TYPE_NETDEV,
     .parent        = TYPE_HOSTDEV,
     .instance_size = sizeof(NETDevice),
+    .class_size = sizeof(NETDeviceClass),
     .class_init    = net_class_init,
 };
 

@@ -88,6 +88,7 @@ typedef struct NetClientInfo {
 } NetClientInfo;
 
 struct NetClientState {
+    NETDevice net_dev;
     NetClientInfo *info;
     int link_down;
     QTAILQ_ENTRY(NetClientState) next;
