@@ -31,6 +31,7 @@
 #include "qemu-error.h"
 #include "qemu-option.h"
 #include "qemu_socket.h"
+#include "qemu/hostdev.h"
 
 typedef struct NetSocketState {
     NetClientState nc;
@@ -587,11 +588,13 @@ static int net_socket_udp_init(NetClientState *peer,
     return 0;
 }
 
-int net_init_socket(QemuOpts *opts,
-                    Monitor *mon,
-                    const char *name,
-                    NetClientState *peer)
+int net_init_socket(NETDevice *net_dev)
 {
+    QemuOpts *opts = net_dev->opts;
+    Monitor *mon = net_dev->mon;
+    char *name = g_strdup(net_dev->name);
+    NetClientState *peer = net_dev->peer;
+
     if (qemu_opt_get(opts, "fd")) {
         int fd;
 
@@ -690,3 +693,30 @@ int net_init_socket(QemuOpts *opts,
     }
     return 0;
 }
+
+static hostdevProperty net_socket_properties[] = {
+    DEFINE_HOSTDEV_PROP_END_OF_LIST(),
+};
+
+static void net_socket_class_init(ObjectClass *klass, void *data)
+{
+    NETDeviceClass *k = NETDEV_CLASS(klass);
+    HOSTDeviceClass *dc = HOSTDEV_CLASS(klass);
+
+    k->init = net_init_socket;
+    dc->props = net_socket_properties;
+}
+
+static TypeInfo net_socket_type = {
+    .name          = "socket",
+    .parent        = TYPE_NETDEV,
+    .instance_size = sizeof(NetClientState),
+    .class_init    = net_socket_class_init,
+};
+
+static void net_socket_register_types(void)
+{
+    type_register_static(&net_socket_type);
+}
+
+type_init(net_socket_register_types)

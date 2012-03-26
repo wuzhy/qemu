@@ -26,8 +26,8 @@
 
 #include "net.h"
 #include "qemu-common.h"
+#include "qemu/hostdev.h"
 
-int net_init_socket(QemuOpts *opts, Monitor *mon,
-                    const char *name, NetClientState *peer);
+int net_init_socket(NETDevice *net_dev);
 
 #endif /* QEMU_NET_SOCKET_H */
