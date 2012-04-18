@@ -84,7 +84,16 @@ int vhost_scsi_start(VHostSCSI *vs, VirtIODevice *vdev)
 void vhost_scsi_stop(VHostSCSI *vs, VirtIODevice *vdev)
 {
     fprintf(stderr, "vhost_scsi_stop\n");
-    /* TODO clear wwpn and tpgt */
+
+    int ret;
+    struct vhost_vring_target backend;
+
+    pstrcpy((char *)backend.vhost_wwpn, sizeof(backend.vhost_wwpn), vs->wwpn);
+    backend.vhost_tpgt = vs->tpgt;
+    ret = ioctl(vs->dev.control, VHOST_SCSI_CLEAR_ENDPOINT, &backend);
+    if (ret < 0) {
+        fprintf(stderr, "Failed to clear endpoint\n");
+    }
 
     vhost_dev_stop(&vs->dev, vdev);
 }
