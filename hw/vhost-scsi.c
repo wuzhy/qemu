@@ -57,6 +57,12 @@ int vhost_scsi_start(VHostSCSI *vs, VirtIODevice *vdev)
 
     vs->dev.nvqs = 3;
     vs->dev.vqs = vs->vqs;
+
+    ret = vhost_dev_enable_notifiers(&vs->dev, vdev);
+    if (ret < 0) {
+        return ret;
+    }
+
     ret = vhost_dev_start(&vs->dev, vdev);
     if (ret < 0) {
         return ret;
