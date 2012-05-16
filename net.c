@@ -1087,7 +1087,7 @@ void qmp_netdev_del(const char *id, Error **errp)
     qemu_opts_del(qemu_opts_find(qemu_find_opts_err("netdev", errp), id));
 }
 
-static void print_net_client(Monitor *mon, NetClientState *vc)
+void print_net_client(Monitor *mon, NetClientState *vc)
 {
     monitor_printf(mon, "%s: type=%s,%s\n", vc->name,
                    net_client_types[vc->info->type].type, vc->info_str);
@@ -1098,20 +1098,24 @@ void do_info_network(Monitor *mon)
     NetClientState *nc, *peer;
     net_client_type type;
 
-    monitor_printf(mon, "Devices not on any VLAN:\n");
+    net_hub_info(mon);
+
     QTAILQ_FOREACH(nc, &net_clients, next) {
         peer = nc->peer;
         type = nc->info->type;
+
+        if (net_hub_port_peer_nc(nc)) {
+            continue;
+        }
+
         if (!peer || type == NET_CLIENT_TYPE_NIC) {
-            monitor_printf(mon, "  ");
             print_net_client(mon, nc);
         } /* else it's a netdev connected to a NIC, printed with the NIC */
         if (peer && type == NET_CLIENT_TYPE_NIC) {
-            monitor_printf(mon, "   \\ ");
+            monitor_printf(mon, " \\ ");
             print_net_client(mon, peer);
         }
     }
-    net_hub_info(mon);
 }
 
 void qmp_set_link(const char *name, bool up, Error **errp)
