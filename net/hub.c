@@ -184,6 +184,25 @@ NetClientState *net_hub_find_client_by_name(unsigned int hub_id,
 }
 
 /**
+ * Determine if one nc peers with one hub port
+ */
+bool net_hub_port_peer_nc(NetClientState *nc)
+{
+    NetHub *hub;
+    NetHubPort *port;
+
+    QLIST_FOREACH(hub, &hubs, next) {
+        QLIST_FOREACH(port, &hub->ports, next) {
+            if (nc == port->nc.peer) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
  * Print hub configuration
  */
 void net_hub_info(Monitor *mon)
@@ -194,8 +213,8 @@ void net_hub_info(Monitor *mon)
     QLIST_FOREACH(hub, &hubs, next) {
         monitor_printf(mon, "hub %u\n", hub->id);
         QLIST_FOREACH(port, &hub->ports, next) {
-            monitor_printf(mon, "    port %u peer %s\n", port->id,
-                           port->nc.peer ? port->nc.peer->name : "<none>");
+            monitor_printf(mon, " \\ ");
+            print_net_client(mon, port->nc.peer);
         }
     }
 }
