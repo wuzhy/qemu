@@ -23,6 +23,7 @@ NetClientState *net_hub_find_client_by_name(unsigned int hub_id,
 void net_hub_info(Monitor *mon);
 int net_hub_id_for_client(NetClientState *nc, unsigned int *id);
 void net_hub_check_clients(void);
+NetClientState *net_hub_port_find(unsigned int hub_id);
 bool net_hub_port_peer_nc(NetClientState *nc);
 
 #endif /* NET_HUB_H */

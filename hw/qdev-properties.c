@@ -2,6 +2,7 @@
 #include "qdev.h"
 #include "qerror.h"
 #include "blockdev.h"
+#include "net/hub.h"
 
 void *qdev_get_prop_ptr(DeviceState *dev, Property *prop)
 {
@@ -589,6 +590,82 @@ PropertyInfo qdev_prop_netdev = {
     .name  = "netdev",
     .get   = get_netdev,
     .set   = set_netdev,
+};
+
+/* --- vlan --- */
+
+static int print_vlan(DeviceState *dev, Property *prop, char *dest, size_t len)
+{
+    NetClientState **ptr = qdev_get_prop_ptr(dev, prop);
+
+    if (*ptr) {
+        unsigned int id;
+        if (!net_hub_id_for_client(*ptr, &id)) {
+            return snprintf(dest, len, "%u", id);
+        }
+    }
+
+    return snprintf(dest, len, "<null>");
+}
+
+static void get_vlan(Object *obj, Visitor *v, void *opaque,
+                     const char *name, Error **errp)
+{
+    DeviceState *dev = DEVICE(obj);
+    Property *prop = opaque;
+    NetClientState **ptr = qdev_get_prop_ptr(dev, prop);
+    int64_t id = -1;
+
+    if (*ptr) {
+        unsigned int hub_id;
+        if(!net_hub_id_for_client(*ptr, &hub_id)) {
+           id = (int64_t)hub_id;
+        }
+    }
+
+    visit_type_int(v, &id, name, errp);
+}
+
+static void set_vlan(Object *obj, Visitor *v, void *opaque,
+                     const char *name, Error **errp)
+{
+    DeviceState *dev = DEVICE(obj);
+    Property *prop = opaque;
+    NetClientState **ptr = qdev_get_prop_ptr(dev, prop);
+    Error *local_err = NULL;
+    int64_t id;
+    NetClientState *hubport;
+
+    if (dev->state != DEV_STATE_CREATED) {
+        error_set(errp, QERR_PERMISSION_DENIED);
+        return;
+    }
+
+    visit_type_int(v, &id, name, &local_err);
+    if (local_err) {
+        error_propagate(errp, local_err);
+        return;
+    }
+
+    if (id == -1) {
+        *ptr = NULL;
+        return;
+    }
+
+    hubport = net_hub_port_find(id);
+    if (!hubport) {
+        error_set(errp, QERR_INVALID_PARAMETER_VALUE,
+                  name, prop->info->name);
+        return;
+    }
+    *ptr = hubport;
+}
+
+PropertyInfo qdev_prop_vlan = {
+    .name  = "vlan",
+    .print = print_vlan,
+    .get   = get_vlan,
+    .set   = set_vlan,
 };
 
 /* --- pointer --- */
