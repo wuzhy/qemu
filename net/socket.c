@@ -82,13 +82,16 @@ static void net_socket_send(void *opaque)
         /* end of connection */
     eoc:
         qemu_set_fd_handler(s->fd, NULL, NULL, NULL);
-        qemu_set_fd_handler(s->listen_fd, net_socket_accept, NULL, s);
+        if (s->listen_fd != -1) {
+            qemu_set_fd_handler(s->listen_fd, net_socket_accept, NULL, s);
+        }
         closesocket(s->fd);
 
         s->fd = -1;
         s->state = 0;
         s->index = 0;
         s->packet_len = 0;
+        s->nc.link_down = true;
         memset(s->buf, 0, sizeof(s->buf));
         memset(s->nc.info_str, 0, sizeof(s->nc.info_str));
 
@@ -239,8 +242,16 @@ fail:
 static void net_socket_cleanup(NetClientState *nc)
 {
     NetSocketState *s = DO_UPCAST(NetSocketState, nc, nc);
-    qemu_set_fd_handler(s->fd, NULL, NULL, NULL);
-    close(s->fd);
+    if (s->fd != -1) {
+        qemu_set_fd_handler(s->fd, NULL, NULL, NULL);
+        close(s->fd);
+        s->fd = -1;
+    }
+    if (s->listen_fd != -1) {
+        qemu_set_fd_handler(s->listen_fd, NULL, NULL, NULL);
+        closesocket(s->listen_fd);
+        s->listen_fd = -1;
+    }
 }
 
 static NetClientInfo net_dgram_socket_info = {
@@ -302,6 +313,7 @@ static NetSocketState *net_socket_fd_init_dgram(NetClientState *peer,
     s = DO_UPCAST(NetSocketState, nc, nc);
 
     s->fd = fd;
+    s->listen_fd = -1;
 
     qemu_set_fd_handler(s->fd, net_socket_send_dgram, NULL, s);
 
@@ -345,6 +357,7 @@ static NetSocketState *net_socket_fd_init_stream(NetClientState *peer,
     s = DO_UPCAST(NetSocketState, nc, nc);
 
     s->fd = fd;
+    s->listen_fd = -1;
 
     if (is_connected) {
         net_socket_connect(s);
@@ -445,6 +458,7 @@ static int net_socket_listen_init(NetClientState *peer,
 
     nc = qemu_new_net_client(&net_socket_info, peer, model, name);
     s = DO_UPCAST(NetSocketState, nc, nc);
+    s->fd = -1;
     s->listen_fd = fd;
     s->nc.link_down = true;
 
