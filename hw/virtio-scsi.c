@@ -533,7 +533,11 @@ static void virtio_scsi_get_config(VirtIODevice *vdev,
     stl_raw(&scsiconf->sense_size, s->sense_size);
     stl_raw(&scsiconf->cdb_size, s->cdb_size);
     stl_raw(&scsiconf->max_channel, VIRTIO_SCSI_MAX_CHANNEL);
-    stl_raw(&scsiconf->max_target, VIRTIO_SCSI_MAX_TARGET);
+    if (s->vhost_scsi) {
+        stl_raw(&scsiconf->max_target, 0);
+    } else {
+        stl_raw(&scsiconf->max_target, VIRTIO_SCSI_MAX_TARGET);
+    }
     stl_raw(&scsiconf->max_lun, VIRTIO_SCSI_MAX_LUN);
 }
 
